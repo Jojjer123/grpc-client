@@ -1,18 +1,18 @@
 FROM onosproject/golang-build:v1 as build
 
-ENV ONOS_MONITOR_ROOT=/go/src/github.com/onosproject/device-monitor
+ENV ONOS_GRPC_CLIENT_ROOT=/go/src/github.com/onosproject/grpc-client
 ENV CGO_ENABLED=0
 
-RUN mkdir -p $ONOS_MONITOR_ROOT/
+RUN mkdir -p $ONOS_GRPC_CLIENT_ROOT/
 
-COPY . $ONOS_MONITOR_ROOT
+COPY . $ONOS_GRPC_CLIENT_ROOT
 
-RUN cd $ONOS_MONITOR_ROOT && GO111MODULE=on go build -o /go/bin/main ./cmd/
+RUN cd $ONOS_GRPC_CLIENT_ROOT && GO111MODULE=on go build -o /go/bin/main ./cmd/
 
 
 FROM alpine:3.11
 RUN apk add bash
-ENV HOME=/home/device-monitor
+ENV HOME=/home/grpc-client
 RUN mkdir $HOME
 WORKDIR $HOME
 

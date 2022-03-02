@@ -10,5 +10,5 @@ type Server struct {
 // Rename this file to adminServer.go
 
 func (s *Server) MonitorDevice(ctx context.Context, message *MonitorMessage) (*MonitorResponse, error) {
-	return &MonitorResponse{Respone: "Successfully created monitor"}, nil
+	return &MonitorResponse{Response: "Successfully created monitor"}, nil
 }

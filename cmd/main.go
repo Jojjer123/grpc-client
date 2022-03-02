@@ -1,34 +1,32 @@
 package main
 
 import (
-	"sync"
+	"context"
+	"fmt"
 
-	adm "github.com/onosproject/device-monitor/pkg/admin"
-	conf "github.com/onosproject/device-monitor/pkg/config"
-	dataProc "github.com/onosproject/device-monitor/pkg/dataProcessing"
-	deviceMgr "github.com/onosproject/device-monitor/pkg/deviceManager"
-	kafka "github.com/onosproject/device-monitor/pkg/kafka"
-	reqBuilder "github.com/onosproject/device-monitor/pkg/requestBuilder"
-	topo "github.com/onosproject/device-monitor/pkg/topo"
+	adminServer "github.com/onosproject/grpc-client/cmd/generated"
+	"google.golang.org/grpc"
 )
 
 const numberOfComponents = 7
 
-// Starts the main components of the device-monitor
 func main() {
-	var waitGroup sync.WaitGroup
-	waitGroup.Add(numberOfComponents)
+	var conn *grpc.ClientConn
 
-	// WARNING potential problem: buffered vs unbuffered channels block in different stages of the communication.
-	adminChannel := make(chan string)
+	conn, err := grpc.Dial("10.244.0.19:4040", grpc.WithInsecure())
 
-	go topo.TopoInterface(&waitGroup)
-	go conf.ConfigInterface(&waitGroup)
-	go adm.AdminInterface(&waitGroup, adminChannel)
-	go kafka.KafkaInterface(&waitGroup)
-	go reqBuilder.RequestBuilder(&waitGroup)
-	go deviceMgr.DeviceManager(&waitGroup, adminChannel)
-	go dataProc.DataProcessing(&waitGroup)
+	if err != nil {
+		fmt.Println("Did not connect: ", err)
+	}
 
-	waitGroup.Wait()
+	defer conn.Close()
+
+	c := adminServer.NewMonitorAdminInterfaceClient(conn)
+
+	response, err := c.MonitorDevice(context.Background(), &adminServer.MonitorMessage{Action: "supa-action", Target: "supa-server"})
+	if err != nil {
+		fmt.Println("Error when calling MonitorDevice: ", err)
+	}
+
+	fmt.Println("Response from server: ", response.Response)
 }

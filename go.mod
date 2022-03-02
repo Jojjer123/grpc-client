@@ -1,4 +1,4 @@
-module github.com/onosproject/device-monitor
+module github.com/onosproject/grpc-client
 
 go 1.16
 
