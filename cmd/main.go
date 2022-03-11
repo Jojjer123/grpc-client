@@ -3,43 +3,75 @@ package main
 import (
 	"context"
 	"fmt"
-	"sync"
+	"time"
 
-	adminServer "github.com/onosproject/grpc-client/cmd/generated"
-	"google.golang.org/grpc"
+	// "github.com/gogo/protobuf/proto"
+	"github.com/golang/protobuf/proto"
+	"github.com/openconfig/gnmi/client"
+	gclient "github.com/openconfig/gnmi/client/gnmi"
+	// gpb "github.com/openconfig/gnmi/proto/gnmi"
 )
 
-const numberOfComponents = 7
-
 func main() {
-	var waitGroup sync.WaitGroup
-	waitGroup.Add(2)
+	ctx := context.Background()
 
-	var conn *grpc.ClientConn
+	address := []string{"device-monitor:11161"}
 
-	conn, err := grpc.Dial("10.244.0.16:4040", grpc.WithInsecure())
+	c, err := gclient.New(ctx, client.Destination{
+		Addrs:       address,
+		Target:      "device-monitor",
+		Timeout:     time.Second * 5,
+		Credentials: nil,
+		TLS:         nil,
+	})
 
 	if err != nil {
-		fmt.Println("Did not connect: ", err)
+		// fmt.Errorf("could not create a gNMI client: %v", err)
+		fmt.Print("Could not create a gNMI client: ")
+		fmt.Println(err)
 	}
 
-	defer conn.Close()
+	var path []client.Path
 
-	c := adminServer.NewMonitorAdminInterfaceClient(conn)
-	go sendRequest(c, "supa action", "supa target", &waitGroup)
+	path = append(path, []string{"test/testing/lol"})
 
-	c2 := adminServer.NewMonitorAdminInterfaceClient(conn)
-	go sendRequest(c2, "action in uganda", "target acquired", &waitGroup)
+	query := client.Query{
+		Addrs:  address,
+		Target: "supa-target",
+		// Replica: ,
+		UpdatesOnly: true,
+		Queries:     path,
+		Type:        3, // 1 - Once, 2 - Poll, 3 - Stream
+		// Timeout: ,
+		// NotificationHandler: callback,
+		ProtoHandler: protoCallback,
+		// ...
+	}
 
-	waitGroup.Wait()
+	err = c.(*gclient.Client).Subscribe(ctx, query)
+
+	if err != nil {
+		fmt.Print("Target returned RPC error for Subscribe: ")
+		fmt.Println(err)
+	}
+
+	fmt.Println("Client connected successfully")
+
+	for {
+		fmt.Println(c.(*gclient.Client).Recv())
+		time.Sleep(10 * time.Second)
+	}
 }
 
-func sendRequest(c adminServer.MonitorAdminInterfaceClient, action string, target string, waitGroup *sync.WaitGroup) {
-	defer waitGroup.Done()
-	response, err := c.MonitorDevice(context.Background(), &adminServer.MonitorMessage{Action: action, Target: target})
-	if err != nil {
-		fmt.Println("Error when calling MonitorDevice: ", err)
-	}
+// func callback(msg client.Notification) error {
+// 	fmt.Print("callback msg: ")
+// 	fmt.Println(msg)
+// 	return nil
+// }
 
-	fmt.Println("Response from server: ", response.Response)
+// Updates will be sent here,
+func protoCallback(msg proto.Message) error {
+	fmt.Print("protoCallback msg: ")
+	fmt.Println(msg)
+	return nil
 }
