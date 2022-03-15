@@ -38,13 +38,13 @@ func set() {
 	var updateList []*pb.Update
 
 	data := pb.TypedValue_StringVal{
-		StringVal: "set request data here",
+		StringVal: "Create", // Set command
 	}
 
 	// TODO: REWORK, could place it all in Path
 	update := pb.Update{
 		Path: &pb.Path{
-			Target: "switch 123",
+			Target: "192.168.1.34",
 		},
 		Val: &pb.TypedValue{
 			Value: &data,
