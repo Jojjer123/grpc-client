@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"time"
 
 	// "github.com/gogo/protobuf/proto"
@@ -10,19 +11,53 @@ import (
 	"github.com/openconfig/gnmi/client"
 	gclient "github.com/openconfig/gnmi/client/gnmi"
 	pb "github.com/openconfig/gnmi/proto/gnmi"
+
+	types "github.com/onosproject/grpc-client/Types"
 )
 
 func main() {
-	set("Create", "192.168.1.34", "0")
-	time.Sleep(10 * time.Second)
-	set("Create", "192.168.1.82", "1")
+	// setCreate("Create", "192.168.1.34", "0")
+	// time.Sleep(10 * time.Second)
+	// setCreate("Create", "192.168.1.82", "1")
+
+	// type Test struct {
+	// 	Name string
+	// 	Interval int
+	// 	Path string
+	// }
+
+	var config0 []types.DeviceCounters //struct
+
+	c := types.DeviceCounters{
+		Name:     "second",
+		Interval: 123,
+		Path:     "elem: <name: 'test'>",
+	}
+
+	config0 = append(config0, c)
+	// config0[0].Name = "second"
+	// config0[0].Interval = 123
+	// config0[0].Path = "elem: <name: 'test'>"
+
+	configs := []types.Conf{
+		types.Conf{
+			Counter: config0,
+		},
+	}
+
+	conf := types.ConfigRequest{
+		DeviceIP: "192.168.1.82",
+		Configs:  configs,
+	}
+
+	setUpdate(conf)
 
 	for {
 		time.Sleep(10 * time.Second)
 	}
 }
 
-func set(action string, target string, confIndex string) {
+func setCreate(action string, target string, confIndex string) {
 	ctx := context.Background()
 
 	address := []string{"device-monitor:11161"}
@@ -93,11 +128,86 @@ func set(action string, target string, confIndex string) {
 	}
 
 	fmt.Println("Client connected successfully")
+}
+func setUpdate(config types.ConfigRequest) {
+	ctx := context.Background()
 
-	// for {
-	// 	// fmt.Println(c.(*gclient.Client).Recv())
-	// 	time.Sleep(10 * time.Second)
-	// }
+	address := []string{"device-monitor:11161"}
+
+	c, err := gclient.New(ctx, client.Destination{
+		Addrs:       address,
+		Target:      "device-monitor",
+		Timeout:     time.Second * 5,
+		Credentials: nil,
+		TLS:         nil,
+	})
+
+	if err != nil {
+		// fmt.Errorf("could not create a gNMI client: %v", err)
+		fmt.Print("Could not create a gNMI client: ")
+		fmt.Println(err)
+	}
+
+	var updateList []*pb.Update
+
+	actionMap := make(map[string]string)
+	actionMap["Action"] = "Change config"
+
+	pathElements := []*pb.PathElem{}
+
+	pathElements = append(pathElements, &pb.PathElem{
+		Name: "Action",
+		Key:  actionMap,
+	})
+
+	configMap := make(map[string]string)
+	configMap["DeviceIP"] = config.DeviceIP
+	configMap["DeviceName"] = config.DeviceName
+	configMap["Protocol"] = config.Protocol
+
+	// pathElements := []*pb.PathElem{}
+
+	pathElements = append(pathElements, &pb.PathElem{
+		Name: "Info",
+		Key:  configMap,
+	})
+
+	for confIndex, conf := range config.Configs {
+		counterMap := make(map[string]string)
+		for counterIndex, counter := range conf.Counter {
+			counterMap["Name"+strconv.Itoa(counterIndex)] = counter.Name
+			counterMap["Interval"+strconv.Itoa(counterIndex)] = strconv.Itoa(counter.Interval)
+			counterMap["Path"+strconv.Itoa(counterIndex)] = counter.Path
+		}
+
+		pathElements = append(pathElements, &pb.PathElem{
+			Name: "Config" + strconv.Itoa(confIndex),
+			Key:  counterMap,
+		})
+	}
+
+	update := pb.Update{
+		Path: &pb.Path{
+			Target: config.DeviceIP,
+			Elem:   pathElements,
+		},
+	}
+
+	updateList = append(updateList, &update)
+
+	setRequest := pb.SetRequest{
+		Update: updateList,
+	}
+
+	response, err := c.(*gclient.Client).Set(ctx, &setRequest)
+
+	fmt.Print("Response from device-monitor is: ")
+	fmt.Println(response)
+
+	if err != nil {
+		fmt.Print("Target returned RPC error for Set: ")
+		fmt.Println(err)
+	}
 }
 
 func sub() {
