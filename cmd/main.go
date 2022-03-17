@@ -13,10 +13,16 @@ import (
 )
 
 func main() {
-	set()
+	set("Create", "192.168.1.34", "0")
+	time.Sleep(10 * time.Second)
+	set("Create", "192.168.1.82", "1")
+
+	for {
+		time.Sleep(10 * time.Second)
+	}
 }
 
-func set() {
+func set(action string, target string, confIndex string) {
 	ctx := context.Background()
 
 	address := []string{"device-monitor:11161"}
@@ -37,18 +43,37 @@ func set() {
 
 	var updateList []*pb.Update
 
-	data := pb.TypedValue_StringVal{
-		StringVal: "Create", // Set command
-	}
+	// data := pb.TypedValue_StringVal{
+	// 	StringVal: "Create", // Set command
+	// }
+
+	actionMap := make(map[string]string)
+	actionMap["Action"] = action
+
+	pathElements := []*pb.PathElem{}
+
+	pathElements = append(pathElements, &pb.PathElem{
+		Name: "Action",
+		Key:  actionMap,
+	})
+
+	configMap := make(map[string]string)
+	configMap["ConfigIndex"] = confIndex
+
+	pathElements = append(pathElements, &pb.PathElem{
+		Name: "ConfigIndex",
+		Key:  configMap,
+	})
 
 	// TODO: REWORK, could place it all in Path
 	update := pb.Update{
 		Path: &pb.Path{
-			Target: "192.168.1.34",
+			Target: target,
+			Elem:   pathElements,
 		},
-		Val: &pb.TypedValue{
-			Value: &data,
-		},
+		// Val: &pb.TypedValue{
+		// 	Value: &data,
+		// },
 	}
 
 	updateList = append(updateList, &update)
@@ -69,10 +94,10 @@ func set() {
 
 	fmt.Println("Client connected successfully")
 
-	for {
-		// fmt.Println(c.(*gclient.Client).Recv())
-		time.Sleep(10 * time.Second)
-	}
+	// for {
+	// 	// fmt.Println(c.(*gclient.Client).Recv())
+	// 	time.Sleep(10 * time.Second)
+	// }
 }
 
 func sub() {
