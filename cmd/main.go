@@ -64,11 +64,11 @@ func main() {
 func testing() {
 	ctx := context.Background()
 
-	address := []string{"storage-service:11161"}
+	address := []string{"10.244.0.235:11161"}
 
 	c, err := gclient.New(ctx, client.Destination{
 		Addrs:       address,
-		Target:      "storage-service",
+		Target:      "10.244.0.235",
 		Timeout:     time.Second * 5,
 		Credentials: nil,
 		TLS:         nil,
@@ -80,42 +80,6 @@ func testing() {
 		fmt.Println(err)
 	}
 
-	// var updateList []*pb.Update
-
-	// data := pb.TypedValue_StringVal{
-	// 	StringVal: "Create", // Set command
-	// }
-
-	// actionMap := make(map[string]string)
-	// actionMap["Action"] = action
-
-	// pathElements := []*pb.PathElem{}
-
-	// pathElements = append(pathElements, &pb.PathElem{
-	// 	Name: "Action",
-	// 	// Key:  actionMap,
-	// })
-
-	// configMap := make(map[string]string)
-	// configMap["ConfigIndex"] = confIndex
-
-	// pathElements = append(pathElements, &pb.PathElem{
-	// 	Name: "ConfigIndex",
-	// 	// Key:  configMap,
-	// })
-
-	// // TODO: REWORK, could place it all in Path
-	// update := pb.Update{
-	// 	Path: &pb.Path{
-	// 		Elem:   pathElements,
-	// 	},
-	// 	// Val: &pb.TypedValue{
-	// 	// 	Value: &data,
-	// 	// },
-	// }
-
-	// updateList = append(updateList, &update)
-
 	getRequest := pb.GetRequest{}
 
 	response, err := c.(*gclient.Client).Get(ctx, &getRequest)
@@ -124,24 +88,21 @@ func testing() {
 		fmt.Println(err)
 	}
 
-	// fmt.Print("Response from storage-service is: ")
-	// fmt.Println(response)
-
-	// schema := Schema{}
-	// dec := gob.NewDecoder(bytes.NewReader(response.Notification[0].Update[0].Val.GetBytesVal()))
-	// err = dec.Decode(&schema)
-	// if err != nil {
-	// 	fmt.Println("Failed to decode byte slice!")
-	// 	fmt.Println(err)
-	// }
-
 	var schema Schema
-
 	json.Unmarshal(response.Notification[0].Update[0].Val.GetBytesVal(), &schema)
 
 	// fmt.Println(schema)
-	getTreeStructure(schema)
-	// schemaTree := getTreeStructure(schema)
+	schemaTree := getTreeStructure(schema)
+
+	// fmt.Println("#######################")
+	fmt.Println(schemaTree.Name)
+	fmt.Println("--------")
+	for _, child := range schemaTree.Children {
+		fmt.Print(" - ")
+		fmt.Print(child.Name)
+		fmt.Print(", ")
+		fmt.Println(child.Namespace)
+	}
 
 	// fmt.Println(schemaTree)
 
@@ -151,66 +112,167 @@ func testing() {
 // TODO: add pointer that traverse the tree based on tags, use that pointer to
 // get correct parents.
 func getTreeStructure(schema Schema) *SchemaTree {
+	var newTree *SchemaTree
 	tree := &SchemaTree{}
-	for index, entry := range schema.Entries {
-		fmt.Println("-------------------")
-		if index == 0 {
-			// fmt.Println("in data")
-			tree.Name = entry.Name
-			tree.Namespace = entry.Namespace
-			fmt.Println(tree.Name)
-			tree = &SchemaTree{Parent: tree}
-			continue
-		}
-		if entry.Value == "" { //&& schema.Entries[index + 1].ParentName  { // Directory
+	lastNode := ""
+	for _, entry := range schema.Entries {
+		// fmt.Println("-------------------")
+		// if index == 0 {
+		// newTree = &SchemaTree{Parent: tree}
+		// newTree.Name = entry.Name
+		// newTree.Namespace = entry.Namespace
+		// fmt.Println(tree.Name)
+		// tree = &SchemaTree{Parent: tree}
+		// continue
+		// }
+		if entry.Value == "" { // Directory
 			if entry.Tag == "end" {
-				// tree = tree.Parent
-				continue
+				if entry.Name != "data" {
+					if lastNode != "leaf" {
+						// fmt.Println(tree.Name)
+						tree = tree.Parent
+					}
+					lastNode = ""
+					// continue
+				}
+			} else {
+
+				newTree = &SchemaTree{Parent: tree}
+
+				newTree.Name = entry.Name
+				newTree.Namespace = entry.Namespace
+				newTree.Parent.Children = append(newTree.Parent.Children, newTree)
+
+				tree = newTree
+
+				// fmt.Print(tree.Name)
+				// fmt.Print(", ")
+				// fmt.Println(tree.Parent.Name)
+
+				// tree = &SchemaTree{Parent: tree}
 			}
-			// fmt.Println("in dir")
-			tree.Name = entry.Name
-			tree.Namespace = entry.Namespace
-			tree.Parent.Children = append(tree.Parent.Children, tree)
-
-			fmt.Println(tree.Name)
-			// fmt.Println(tree.Parent.Name)
-			// fmt.Println(tree)
-
-			tree = &SchemaTree{Parent: tree}
 		} else { // Leaf
-			// fmt.Println("in leaf")
-			tree.Name = entry.Name
-			tree.Value = entry.Value
-			tree.Parent.Children = append(tree.Parent.Children, tree)
-			fmt.Println(tree.Name)
-			fmt.Println(tree.Value)
-			// fmt.Println(tree.Parent.Name)
-			// tree = tree.Parent
+			newTree = &SchemaTree{Parent: tree}
+
+			newTree.Name = entry.Name
+			newTree.Value = entry.Value
+			newTree.Parent.Children = append(newTree.Parent.Children, newTree)
+
+			// fmt.Print(newTree.Name)
+			// fmt.Print(", ")
+			// fmt.Println(newTree.Parent.Name)
+			// fmt.Println(newTree.Value)
+
+			lastNode = "leaf"
 		}
 		// fmt.Println("-------------------")
+		// fmt.Print("name: ")
+		// fmt.Print(tree.Name)
+		// if tree.Name != "data" {
+		// 	fmt.Print(", parent: ")
+		// 	fmt.Println(tree.Parent.Name)
+
+		// 	// fmt.Println("#######")
+		// 	// for i, child := range tree.Parent.Children {
+		// 	// 	if i < 10 {
+		// 	// 		fmt.Print(child.Name)
+		// 	// 		fmt.Print(", ")
+		// 	// 	}
+		// 	// }
+		// 	// fmt.Println("\n******")
+		// 	// for j, child := range tree.Children {
+		// 	// 	if j < 10 {
+		// 	// 		fmt.Print(child.Name)
+		// 	// 		fmt.Print(": ")
+		// 	// 		fmt.Print(child.Value)
+		// 	// 		fmt.Print(", ")
+		// 	// 	}
+		// 	// }
+		// } else {
+		// 	// fmt.Println("")
+		// 	// for _, child := range tree.Children {
+		// 	// 	fmt.Print(child.Name)
+		// 	// 	fmt.Print(" | ")
+		// 	// }
+		// }
+		// fmt.Println("")
 		// fmt.Println(entry)
+		// fmt.Println(tree.Namespace)
 		// fmt.Println("###################")
 	}
 	return tree
 }
 
-// func (s *Schema) UnmarshalBinary(data []byte) (err error) {
-// 	dec := gob.NewDecoder(bytes.NewReader(data))
-// 	if err = dec.Decode(&s.Entry); err != nil {
-// 		return
+// func getTreeStructure(schema Schema) *SchemaTree {
+// 	tree := &SchemaTree{}
+// 	lastNode := ""
+// 	for index, entry := range schema.Entries {
+// 		// fmt.Println("-------------------")
+// 		if index == 0 {
+// 			tree.Name = entry.Name
+// 			tree.Namespace = entry.Namespace
+// 			// fmt.Println(tree.Name)
+// 			tree = &SchemaTree{Parent: tree}
+// 			continue
+// 		}
+// 		if entry.Value == "" { // Directory
+// 			if entry.Tag == "end" {
+// 				if lastNode != "leaf" {
+// 					tree = tree.Parent
+// 				}
+// 				lastNode = ""
+// 				continue
+// 			}
+// 			tree.Name = entry.Name
+// 			tree.Namespace = entry.Namespace
+// 			tree.Parent.Children = append(tree.Parent.Children, tree)
+
+// 			// fmt.Print(tree.Name)
+// 			// fmt.Print(", ")
+// 			// fmt.Println(tree.Parent.Name)
+
+// 			tree = &SchemaTree{Parent: tree}
+// 		} else { // Leaf
+// 			// NEED TO CREATE A NEW OBJECT FOR THE LEAVES???
+// 			if lastNode == "leaf" {
+// 				fmt.Println("************")
+// 				tree = &SchemaTree{Parent: tree.Parent}
+// 				for i, child := range tree.Parent.Children {
+// 					if i < 5 {
+// 						fmt.Print(child.Name)
+// 						fmt.Print(" | ")
+// 					}
+// 				}
+// 				fmt.Println("************")
+// 			}
+
+// 			tree.Name = entry.Name
+// 			tree.Value = entry.Value
+// 			tree.Parent.Children = append(tree.Parent.Children, tree)
+
+// 			// fmt.Print(tree.Name)
+// 			// fmt.Print(", ")
+// 			// fmt.Println(tree.Parent.Name)
+// 			// fmt.Println(tree.Value)
+
+// 			lastNode = "leaf"
+// 		}
+// 		fmt.Println("-------------------")
+// 		fmt.Print("name: ")
+// 		fmt.Print(tree.Name)
+// 		fmt.Print(", parent: ")
+// 		fmt.Println(tree.Parent.Name)
+// 		fmt.Println("#######")
+// 		for i, child := range tree.Parent.Children {
+// 			if i < 10 {
+// 				fmt.Print(child.Name)
+// 				fmt.Print(", ")
+// 			}
+// 		}
+// 		fmt.Println("")
+// 		// fmt.Println("###################")
 // 	}
-// 	if err = dec.Decode(&s.Children); err != nil {
-// 		return
-// 	}
-// 	// var isCyclic bool
-// 	// if err = dec.Decode(&isCyclic); err != nil {
-// 	//     return
-// 	// }
-// 	// err = dec.Decode(&p.Q)
-// 	// if isCyclic {
-// 	//     p.Q.P = p
-// 	// }
-// 	return
+// 	return tree
 // }
 
 // type Schema struct {
