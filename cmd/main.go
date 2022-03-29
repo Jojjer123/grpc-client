@@ -64,11 +64,11 @@ func main() {
 func testing() {
 	ctx := context.Background()
 
-	address := []string{"10.244.0.235:11161"}
+	address := []string{"10.244.0.237:11161"}
 
 	c, err := gclient.New(ctx, client.Destination{
 		Addrs:       address,
-		Target:      "10.244.0.235",
+		Target:      "10.244.0.237",
 		Timeout:     time.Second * 5,
 		Credentials: nil,
 		TLS:         nil,
