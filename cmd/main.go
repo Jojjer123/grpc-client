@@ -85,7 +85,10 @@ func testing() {
 			{
 				Elem: []*pb.PathElem{
 					{
-						Name: "Interfaces",
+						Name: "interfaces",
+					},
+					{
+						Name: "interface",
 					},
 				},
 			},
