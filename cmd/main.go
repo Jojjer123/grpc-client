@@ -80,7 +80,18 @@ func testing() {
 		fmt.Println(err)
 	}
 
-	getRequest := pb.GetRequest{}
+	getRequest := pb.GetRequest{
+		Path: []*pb.Path{
+			{
+				Elem: []*pb.PathElem{
+					{
+						Name: "Interfaces",
+					},
+				},
+			},
+		},
+		Type: pb.GetRequest_CONFIG,
+	}
 
 	response, err := c.(*gclient.Client).Get(ctx, &getRequest)
 	if err != nil {
