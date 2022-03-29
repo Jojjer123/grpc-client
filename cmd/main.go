@@ -64,11 +64,11 @@ func main() {
 func testing() {
 	ctx := context.Background()
 
-	address := []string{"10.244.0.237:11161"}
+	address := []string{"test:11161"}
 
 	c, err := gclient.New(ctx, client.Destination{
 		Addrs:       address,
-		Target:      "10.244.0.237",
+		Target:      "test",
 		Timeout:     time.Second * 5,
 		Credentials: nil,
 		TLS:         nil,
@@ -89,19 +89,21 @@ func testing() {
 	}
 
 	var schema Schema
-	json.Unmarshal(response.Notification[0].Update[0].Val.GetBytesVal(), &schema)
+	if len(response.Notification) > 0 {
+		json.Unmarshal(response.Notification[0].Update[0].Val.GetBytesVal(), &schema)
 
-	// fmt.Println(schema)
-	schemaTree := getTreeStructure(schema)
+		// fmt.Println(schema)
+		schemaTree := getTreeStructure(schema)
 
-	// fmt.Println("#######################")
-	fmt.Println(schemaTree.Name)
-	fmt.Println("--------")
-	for _, child := range schemaTree.Children {
-		fmt.Print(" - ")
-		fmt.Print(child.Name)
-		fmt.Print(", ")
-		fmt.Println(child.Namespace)
+		// fmt.Println("#######################")
+		fmt.Println(schemaTree.Name)
+		fmt.Println("--------")
+		for _, child := range schemaTree.Children {
+			fmt.Print(" - ")
+			fmt.Print(child.Name)
+			fmt.Print(", ")
+			fmt.Println(child.Namespace)
+		}
 	}
 
 	// fmt.Println(schemaTree)
