@@ -87,21 +87,21 @@ func testing() {
 	loopbackKeyMap["name"] = "lo"
 
 	getRequest := pb.GetRequest{
-		Path: []*pb.Path{
-			{
-				Elem: []*pb.PathElem{
-					{
-						Name: "interfaces",
-						Key:  interfaceKeyMap,
-					},
-					{
-						Name: "interface",
-						Key:  loopbackKeyMap,
-					},
-				},
-			},
-		},
-		Type: pb.GetRequest_STATE,
+		// Path: []*pb.Path{
+		// 	{
+		// 		Elem: []*pb.PathElem{
+		// 			{
+		// 				Name: "interfaces",
+		// 				Key:  interfaceKeyMap,
+		// 			},
+		// 			{
+		// 				Name: "interface",
+		// 				Key:  loopbackKeyMap,
+		// 			},
+		// 		},
+		// 	},
+		// },
+		Type: pb.GetRequest_CONFIG,
 	}
 
 	response, err := c.(*gclient.Client).Get(ctx, &getRequest)
