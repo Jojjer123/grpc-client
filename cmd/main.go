@@ -101,7 +101,7 @@ func testing() {
 		// 		},
 		// 	},
 		// },
-		Type: pb.GetRequest_CONFIG,
+		Type: pb.GetRequest_STATE,
 	}
 
 	response, err := c.(*gclient.Client).Get(ctx, &getRequest)
