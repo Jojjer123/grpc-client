@@ -160,15 +160,13 @@ func testing() {
 
 	c.Close()
 
-	fmt.Printf("The set response is: %v", setResponse)
+	fmt.Println(setResponse)
 
 	if err != nil {
 		// fmt.Errorf("could not create a gNMI client: %v", err)
 		fmt.Print("Could not create a gNMI client: ")
 		fmt.Println(err)
 	}
-
-	c.Close()
 
 	// var schema Schema
 	// if len(response.Notification) > 0 {
