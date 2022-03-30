@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"strconv"
 	"time"
@@ -74,6 +73,8 @@ func testing() {
 		TLS:         nil,
 	})
 
+	c.Close()
+
 	if err != nil {
 		// fmt.Errorf("could not create a gNMI client: %v", err)
 		fmt.Print("Could not create a gNMI client: ")
@@ -110,27 +111,81 @@ func testing() {
 		fmt.Println(err)
 	}
 
-	var schema Schema
-	if len(response.Notification) > 0 {
-		json.Unmarshal(response.Notification[0].Update[0].Val.GetBytesVal(), &schema)
+	address = []string{"storage-service:11161"}
 
-		// fmt.Println(schema)
-		schemaTree := getTreeStructure(schema)
+	c, err = gclient.New(ctx, client.Destination{
+		Addrs:       address,
+		Target:      "storage-service",
+		Timeout:     time.Second * 5,
+		Credentials: nil,
+		TLS:         nil,
+	})
 
-		// fmt.Println("#######################")
-		fmt.Println(schemaTree.Name)
-		fmt.Println("--------")
-		for _, child := range schemaTree.Children {
-			fmt.Print(" - ")
-			fmt.Print(child.Name)
-			fmt.Print(", ")
-			fmt.Println(child.Namespace)
-		}
+	if err != nil {
+		// fmt.Errorf("could not create a gNMI client: %v", err)
+		fmt.Print("Could not create a gNMI client: ")
+		fmt.Println(err)
 	}
 
-	// fmt.Println(schemaTree)
+	c.Close()
 
-	// fmt.Println("Client connected successfully")
+	//
+
+	if len(response.Notification) <= 0 {
+		return
+	}
+
+	actionMap := map[string]string{}
+	actionMap["Action"] = "Store namespaces"
+
+	setRequest := pb.SetRequest{
+		Update: []*pb.Update{
+			{
+				Path: &pb.Path{
+					Elem: []*pb.PathElem{
+						{
+							Name: "Action",
+							Key:  actionMap,
+						},
+					},
+				},
+				Val: response.Notification[0].Update[0].Val,
+			},
+		},
+	}
+
+	setResponse, err := c.(*gclient.Client).Set(ctx, &setRequest)
+	if err != nil {
+		fmt.Print("Target returned RPC error for Testing: ")
+		fmt.Println(err)
+	}
+	fmt.Printf("The set response is: %v", setResponse)
+
+	if err != nil {
+		// fmt.Errorf("could not create a gNMI client: %v", err)
+		fmt.Print("Could not create a gNMI client: ")
+		fmt.Println(err)
+	}
+
+	c.Close()
+
+	// var schema Schema
+	// if len(response.Notification) > 0 {
+	// 	json.Unmarshal(response.Notification[0].Update[0].Val.GetBytesVal(), &schema)
+
+	// 	// fmt.Println(schema)
+	// 	schemaTree := getTreeStructure(schema)
+
+	// 	// fmt.Println("#######################")
+	// 	fmt.Println(schemaTree.Name)
+	// 	fmt.Println("--------")
+	// 	for _, child := range schemaTree.Children {
+	// 		fmt.Print(" - ")
+	// 		fmt.Print(child.Name)
+	// 		fmt.Print(", ")
+	// 		fmt.Println(child.Namespace)
+	// 	}
+	// }
 }
 
 // TODO: add pointer that traverse the tree based on tags, use that pointer to
