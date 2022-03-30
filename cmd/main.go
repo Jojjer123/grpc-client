@@ -80,20 +80,28 @@ func testing() {
 		fmt.Println(err)
 	}
 
+	interfaceKeyMap := map[string]string{}
+	interfaceKeyMap["namespace"] = "urn:ietf:params:xml:ns:yang:ietf-interfaces"
+
+	loopbackKeyMap := map[string]string{}
+	loopbackKeyMap["name"] = "lo"
+
 	getRequest := pb.GetRequest{
 		Path: []*pb.Path{
 			{
 				Elem: []*pb.PathElem{
 					{
 						Name: "interfaces",
+						Key:  interfaceKeyMap,
 					},
 					{
 						Name: "interface",
+						Key:  loopbackKeyMap,
 					},
 				},
 			},
 		},
-		Type: pb.GetRequest_CONFIG,
+		Type: pb.GetRequest_STATE,
 	}
 
 	response, err := c.(*gclient.Client).Get(ctx, &getRequest)
