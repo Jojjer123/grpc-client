@@ -73,8 +73,6 @@ func testing() {
 		TLS:         nil,
 	})
 
-	c.Close()
-
 	if err != nil {
 		// fmt.Errorf("could not create a gNMI client: %v", err)
 		fmt.Print("Could not create a gNMI client: ")
@@ -111,6 +109,8 @@ func testing() {
 		fmt.Println(err)
 	}
 
+	c.Close()
+
 	address = []string{"storage-service:11161"}
 
 	c, err = gclient.New(ctx, client.Destination{
@@ -126,8 +126,6 @@ func testing() {
 		fmt.Print("Could not create a gNMI client: ")
 		fmt.Println(err)
 	}
-
-	c.Close()
 
 	//
 
@@ -159,6 +157,9 @@ func testing() {
 		fmt.Print("Target returned RPC error for Testing: ")
 		fmt.Println(err)
 	}
+
+	c.Close()
+
 	fmt.Printf("The set response is: %v", setResponse)
 
 	if err != nil {
