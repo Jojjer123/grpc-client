@@ -203,6 +203,9 @@ func testing() {
 							"Name": "lo",
 						},
 					},
+					{
+						Name: "gate-parameters",
+					},
 				},
 			},
 		},
