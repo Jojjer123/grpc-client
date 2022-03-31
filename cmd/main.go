@@ -63,6 +63,8 @@ func main() {
 func testing() {
 	ctx := context.Background()
 
+	// Send get request to adapter
+
 	address := []string{"gnmi-netconf-adapter:11161"}
 
 	c, err := gclient.New(ctx, client.Destination{
@@ -79,26 +81,26 @@ func testing() {
 		fmt.Println(err)
 	}
 
-	interfaceKeyMap := map[string]string{}
-	interfaceKeyMap["namespace"] = "urn:ietf:params:xml:ns:yang:ietf-interfaces"
+	// interfaceKeyMap := map[string]string{}
+	// interfaceKeyMap["namespace"] = "urn:ietf:params:xml:ns:yang:ietf-interfaces"
 
-	loopbackKeyMap := map[string]string{}
-	loopbackKeyMap["name"] = "lo"
+	// loopbackKeyMap := map[string]string{}
+	// loopbackKeyMap["name"] = "lo"
 
 	getRequest := pb.GetRequest{
 		Path: []*pb.Path{
-			{
-				Elem: []*pb.PathElem{
-					{
-						Name: "interfaces",
-						Key:  interfaceKeyMap,
-					},
-					{
-						Name: "interface",
-						Key:  loopbackKeyMap,
-					},
-				},
-			},
+			// {
+			// 	Elem: []*pb.PathElem{
+			// 		{
+			// 			Name: "interfaces",
+			// 			Key:  interfaceKeyMap,
+			// 		},
+			// 		{
+			// 			Name: "interface",
+			// 			Key:  loopbackKeyMap,
+			// 		},
+			// 	},
+			// },
 		},
 		Type: pb.GetRequest_STATE,
 	}
@@ -110,6 +112,8 @@ func testing() {
 	}
 
 	c.Close()
+
+	// Send set request to storage
 
 	address = []string{"storage-service:11161"}
 
@@ -167,6 +171,53 @@ func testing() {
 		fmt.Print("Could not create a gNMI client: ")
 		fmt.Println(err)
 	}
+
+	// Send get request to storage
+
+	address = []string{"storage-service:11161"}
+
+	c, err = gclient.New(ctx, client.Destination{
+		Addrs:       address,
+		Target:      "storage-service",
+		Timeout:     time.Second * 5,
+		Credentials: nil,
+		TLS:         nil,
+	})
+
+	if err != nil {
+		// fmt.Errorf("could not create a gNMI client: %v", err)
+		fmt.Print("Could not create a gNMI client: ")
+		fmt.Println(err)
+	}
+
+	getRequest = pb.GetRequest{
+		Path: []*pb.Path{
+			{
+				Elem: []*pb.PathElem{
+					{
+						Name: "interfaces",
+					},
+					{
+						Name: "interface",
+						Key: map[string]string{
+							"Name": "lo",
+						},
+					},
+				},
+			},
+		},
+		Type: 4,
+	}
+
+	response, err = c.(*gclient.Client).Get(ctx, &getRequest)
+	if err != nil {
+		fmt.Print("Target returned RPC error for Testing: ")
+		fmt.Println(err)
+	}
+
+	c.Close()
+
+	fmt.Println(response.Notification[0].Update)
 
 	// var schema Schema
 	// if len(response.Notification) > 0 {
