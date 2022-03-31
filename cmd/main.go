@@ -200,11 +200,17 @@ func testing() {
 					{
 						Name: "interface",
 						Key: map[string]string{
-							"Name": "lo",
+							"Name": "sw0p1",
 						},
 					},
 					{
-						Name: "gate-parameters",
+						Name: "bridge-port",
+					},
+					{
+						Name: "traffic-class",
+					},
+					{
+						Name: "priority0",
 					},
 				},
 			},
