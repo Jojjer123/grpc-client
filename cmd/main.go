@@ -197,12 +197,12 @@ func testing() {
 					{
 						Name: "interfaces",
 					},
-					// {
-					// 	Name: "interface",
-					// 	Key: map[string]string{
-					// 		"Name": "lo",
-					// 	},
-					// },
+					{
+						Name: "interface",
+						Key: map[string]string{
+							"Name": "lo",
+						},
+					},
 				},
 			},
 		},
