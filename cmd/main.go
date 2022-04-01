@@ -291,7 +291,7 @@ func testing() {
 					{
 						Name: "interface",
 						Key: map[string]string{
-							"Name": "sw0p1",
+							"name": "sw0p1",
 						},
 					},
 					{
