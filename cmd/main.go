@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"time"
@@ -352,14 +353,18 @@ func testing() {
 
 	c.Close()
 
-	fmt.Println(response)
+	// fmt.Println(response)
 
-	// var schema Schema
-	// if len(response.Notification) > 0 {
-	// 	json.Unmarshal(response.Notification[0].Update[0].Val.GetBytesVal(), &schema)
+	var schema Schema
+	var schemaTree *SchemaTree
+	if len(response.Notification) > 0 {
+		json.Unmarshal(response.Notification[0].Update[0].Val.GetBytesVal(), &schema)
 
-	// 	// fmt.Println(schema)
-	// 	schemaTree := getTreeStructure(schema)
+		// fmt.Println(schema)
+		schemaTree = getTreeStructure(schema)
+	}
+
+	printSchemaTree(schemaTree)
 
 	// 	// fmt.Println("#######################")
 	// 	fmt.Println(schemaTree.Name)
@@ -371,6 +376,13 @@ func testing() {
 	// 		fmt.Println(child.Namespace)
 	// 	}
 	// }
+}
+
+func printSchemaTree(schemaTree *SchemaTree) {
+	fmt.Printf("%s - %s - %v\n", schemaTree.Parent.Name, schemaTree.Name, schemaTree.Namespace)
+	for _, child := range schemaTree.Children {
+		printSchemaTree(child)
+	}
 }
 
 // TODO: add pointer that traverse the tree based on tags, use that pointer to
