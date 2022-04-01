@@ -317,7 +317,42 @@ func testing() {
 
 	c.Close()
 
-	fmt.Println(response.Notification[0].Update)
+	fmt.Println(response.Notification[0].Update[0])
+
+	// Send get request to adapter
+
+	address = []string{"gnmi-netconf-adapter:11161"}
+
+	c, err = gclient.New(ctx, client.Destination{
+		Addrs:       address,
+		Target:      "gnmi-netconf-adapter",
+		Timeout:     time.Second * 5,
+		Credentials: nil,
+		TLS:         nil,
+	})
+
+	if err != nil {
+		// fmt.Errorf("could not create a gNMI client: %v", err)
+		fmt.Print("Could not create a gNMI client: ")
+		fmt.Println(err)
+	}
+
+	getRequest = pb.GetRequest{
+		Path: []*pb.Path{
+			response.Notification[0].Update[0].Path,
+		},
+		Type: pb.GetRequest_STATE,
+	}
+
+	response, err = c.(*gclient.Client).Get(ctx, &getRequest)
+	if err != nil {
+		fmt.Print("Target returned RPC error for Testing: ")
+		fmt.Println(err)
+	}
+
+	c.Close()
+
+	fmt.Println(response)
 
 	// var schema Schema
 	// if len(response.Notification) > 0 {
