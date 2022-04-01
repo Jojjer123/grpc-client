@@ -379,7 +379,7 @@ func testing() {
 }
 
 func printSchemaTree(schemaTree *SchemaTree) {
-	fmt.Printf("%s - %s - %v\n", schemaTree.Parent.Name, schemaTree.Name, schemaTree.Namespace)
+	fmt.Printf("%s - %s - %v - %s\n", schemaTree.Parent.Name, schemaTree.Name, schemaTree.Namespace, schemaTree.Value)
 	for _, child := range schemaTree.Children {
 		printSchemaTree(child)
 	}
