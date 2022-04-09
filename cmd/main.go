@@ -17,7 +17,7 @@ import (
 )
 
 func main() {
-	// setCreate("Create", "192.168.1.34", "0")
+	setCreate("Create", "192.168.1.34", "0")
 	// time.Sleep(10 * time.Second)
 	// setCreate("Create", "192.168.1.82", "1")
 
@@ -56,101 +56,12 @@ func main() {
 
 	// netconfConv(xmlString)
 
-	testing()
+	// testing()
 
 	for {
 		time.Sleep(10 * time.Second)
 	}
 }
-
-// func netconfConv(xmlString string) *types.Schema {
-// 	decoder := xml.NewDecoder(strings.NewReader(xmlString))
-// 	schema := &types.Schema{}
-
-// 	var newEntry *types.SchemaEntry
-// 	// var lastNamespace string
-
-// 	var nsParser *types.NamespaceParser
-
-// 	index := 0
-// 	for {
-// 		tok, _ := decoder.Token()
-
-// 		if tok == nil {
-// 			fmt.Println("")
-// 			return schema
-// 		}
-
-// 		switch tokType := tok.(type) {
-// 		case xml.StartElement:
-// 			// fmt.Println(tokType.Name.Local)
-// 			newEntry = &types.SchemaEntry{}
-// 			newEntry.Name = tokType.Name.Local
-
-// 			// nsParser = &types.NamespaceParser{}
-
-// 			if index > 0 {
-// 				newNsParser := &types.NamespaceParser{
-// 					Parent:              nsParser,
-// 					LastParentNamespace: nsParser.LastParentNamespace,
-// 				}
-
-// 				// fmt.Print(tokType.Name.Local)
-// 				// fmt.Printf(" - %v", tokType.Attr)
-
-// 				if nsParser.LastParentNamespace != tokType.Name.Space {
-// 					newNsParser.LastParentNamespace = tokType.Name.Space
-// 					newEntry.Namespace = tokType.Name.Space
-// 					// fmt.Printf(" - %s\n", newNsParser.LastParentNamespace)
-// 				} else {
-// 					// fmt.Print("\n")
-// 				}
-
-// 				nsParser.Children = append(nsParser.Children, newNsParser)
-
-// 				nsParser = newNsParser
-
-// 				// TODO: Fix namespaces, it currently won't add modules-state which is a module
-// 				// with exactly the same namespace as the previous module yang-library for state-data
-// 				// if tokType.Name.Space != lastNamespace {
-// 				// 	lastNamespace = tokType.Name.Space
-// 				// 	newEntry.Namespace = lastNamespace
-// 				// }
-// 				newEntry.Tag = "start"
-// 			} else {
-// 				nsParser = &types.NamespaceParser{
-// 					LastParentNamespace: tokType.Name.Space,
-// 					Parent:              nil,
-// 				}
-
-// 				// fmt.Printf("%s - %s\n", newEntry.Name, nsParser.LastParentNamespace)
-
-// 				// lastNamespace = tokType.Name.Space
-// 				newEntry.Namespace = tokType.Name.Space
-// 			}
-
-// 			schema.Entries = append(schema.Entries, *newEntry)
-// 			index++
-
-// 		case xml.EndElement:
-// 			// fmt.Printf("Exiting %s now\n", tokType.Name.Local)
-// 			nsParser = nsParser.Parent
-
-// 			newEntry = &types.SchemaEntry{}
-// 			newEntry.Name = tokType.Name.Local
-// 			newEntry.Tag = "end"
-// 			schema.Entries = append(schema.Entries, *newEntry)
-// 			index++
-
-// 		case xml.CharData:
-// 			bytes := xml.CharData(tokType)
-// 			schema.Entries[index-1].Value = string([]byte(bytes))
-
-// 		default:
-// 			fmt.Printf("Token type was not recognized with type: %v", tokType)
-// 		}
-// 	}
-// }
 
 func testing() {
 	ctx := context.Background()
@@ -365,17 +276,6 @@ func testing() {
 	}
 
 	printSchemaTree(schemaTree)
-
-	// 	// fmt.Println("#######################")
-	// 	fmt.Println(schemaTree.Name)
-	// 	fmt.Println("--------")
-	// 	for _, child := range schemaTree.Children {
-	// 		fmt.Print(" - ")
-	// 		fmt.Print(child.Name)
-	// 		fmt.Print(", ")
-	// 		fmt.Println(child.Namespace)
-	// 	}
-	// }
 }
 
 func printSchemaTree(schemaTree *SchemaTree) {
@@ -479,84 +379,6 @@ func getTreeStructure(schema Schema) *SchemaTree {
 	return tree
 }
 
-// func getTreeStructure(schema Schema) *SchemaTree {
-// 	tree := &SchemaTree{}
-// 	lastNode := ""
-// 	for index, entry := range schema.Entries {
-// 		// fmt.Println("-------------------")
-// 		if index == 0 {
-// 			tree.Name = entry.Name
-// 			tree.Namespace = entry.Namespace
-// 			// fmt.Println(tree.Name)
-// 			tree = &SchemaTree{Parent: tree}
-// 			continue
-// 		}
-// 		if entry.Value == "" { // Directory
-// 			if entry.Tag == "end" {
-// 				if lastNode != "leaf" {
-// 					tree = tree.Parent
-// 				}
-// 				lastNode = ""
-// 				continue
-// 			}
-// 			tree.Name = entry.Name
-// 			tree.Namespace = entry.Namespace
-// 			tree.Parent.Children = append(tree.Parent.Children, tree)
-
-// 			// fmt.Print(tree.Name)
-// 			// fmt.Print(", ")
-// 			// fmt.Println(tree.Parent.Name)
-
-// 			tree = &SchemaTree{Parent: tree}
-// 		} else { // Leaf
-// 			// NEED TO CREATE A NEW OBJECT FOR THE LEAVES???
-// 			if lastNode == "leaf" {
-// 				fmt.Println("************")
-// 				tree = &SchemaTree{Parent: tree.Parent}
-// 				for i, child := range tree.Parent.Children {
-// 					if i < 5 {
-// 						fmt.Print(child.Name)
-// 						fmt.Print(" | ")
-// 					}
-// 				}
-// 				fmt.Println("************")
-// 			}
-
-// 			tree.Name = entry.Name
-// 			tree.Value = entry.Value
-// 			tree.Parent.Children = append(tree.Parent.Children, tree)
-
-// 			// fmt.Print(tree.Name)
-// 			// fmt.Print(", ")
-// 			// fmt.Println(tree.Parent.Name)
-// 			// fmt.Println(tree.Value)
-
-// 			lastNode = "leaf"
-// 		}
-// 		fmt.Println("-------------------")
-// 		fmt.Print("name: ")
-// 		fmt.Print(tree.Name)
-// 		fmt.Print(", parent: ")
-// 		fmt.Println(tree.Parent.Name)
-// 		fmt.Println("#######")
-// 		for i, child := range tree.Parent.Children {
-// 			if i < 10 {
-// 				fmt.Print(child.Name)
-// 				fmt.Print(", ")
-// 			}
-// 		}
-// 		fmt.Println("")
-// 		// fmt.Println("###################")
-// 	}
-// 	return tree
-// }
-
-// type Schema struct {
-// 	Entry    *SchemaEntry
-// 	Children map[string]interface{}
-// 	Parent   *Schema
-// }
-
 type SchemaTree struct {
 	Name      string
 	Namespace string
@@ -595,45 +417,30 @@ func setCreate(action string, target string, confIndex string) {
 		fmt.Println(err)
 	}
 
-	var updateList []*pb.Update
-
-	// data := pb.TypedValue_StringVal{
-	// 	StringVal: "Create", // Set command
-	// }
-
 	actionMap := make(map[string]string)
 	actionMap["Action"] = action
-
-	pathElements := []*pb.PathElem{}
-
-	pathElements = append(pathElements, &pb.PathElem{
-		Name: "Action",
-		Key:  actionMap,
-	})
 
 	configMap := make(map[string]string)
 	configMap["ConfigIndex"] = confIndex
 
-	pathElements = append(pathElements, &pb.PathElem{
-		Name: "ConfigIndex",
-		Key:  configMap,
-	})
-
-	// TODO: REWORK, could place it all in Path
-	update := pb.Update{
-		Path: &pb.Path{
-			Target: target,
-			Elem:   pathElements,
-		},
-		// Val: &pb.TypedValue{
-		// 	Value: &data,
-		// },
-	}
-
-	updateList = append(updateList, &update)
-
 	setRequest := pb.SetRequest{
-		Update: updateList,
+		Update: []*pb.Update{
+			{
+				Path: &pb.Path{
+					Target: target,
+					Elem: []*pb.PathElem{
+						{
+							Name: "Action",
+							Key:  actionMap,
+						},
+						{
+							Name: "ConfigIndex",
+							Key:  configMap,
+						},
+					},
+				},
+			},
+		},
 	}
 
 	response, err := c.(*gclient.Client).Set(ctx, &setRequest)
@@ -648,6 +455,7 @@ func setCreate(action string, target string, confIndex string) {
 
 	fmt.Println("Client connected successfully")
 }
+
 func setUpdate(config types.ConfigRequest) {
 	ctx := context.Background()
 
@@ -779,12 +587,6 @@ func sub() {
 		time.Sleep(10 * time.Second)
 	}
 }
-
-// func callback(msg client.Notification) error {
-// 	fmt.Print("callback msg: ")
-// 	fmt.Println(msg)
-// 	return nil
-// }
 
 // Updates will be sent here,
 func protoCallback(msg proto.Message) error {
