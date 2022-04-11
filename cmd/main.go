@@ -17,9 +17,15 @@ import (
 )
 
 func main() {
-	// setCreate("Create", "192.168.0.1", "0")
+	setReq("Create", "192.168.0.1", "0")
 
-	// setCreate("Create", "192.168.0.2", "0")
+	time.Sleep(12 * time.Second)
+
+	setReq("Update", "192.168.0.1", "1")
+
+	// setReq("Create", "192.168.0.2", "0")
+
+	time.Sleep(10 * time.Second)
 
 	setDelete("Delete", "192.168.0.1")
 
@@ -457,7 +463,7 @@ func setDelete(action string, target string) {
 	fmt.Println("Client connected successfully")
 }
 
-func setCreate(action string, target string, confIndex string) {
+func setReq(action string, target string, confIndex string) {
 	ctx := context.Background()
 
 	address := []string{"device-monitor:11161"}
