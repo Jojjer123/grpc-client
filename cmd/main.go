@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"strconv"
 	"time"
@@ -17,7 +16,7 @@ import (
 )
 
 func main() {
-	setCreate("Create", "192.168.0.1", "0")
+	// setCreate("Create", "192.168.0.1", "0")
 
 	// time.Sleep(10 * time.Second)
 	// setCreate("Create", "192.168.1.82", "1")
@@ -93,18 +92,19 @@ func testing() {
 
 	getRequest := pb.GetRequest{
 		Path: []*pb.Path{
-			// {
-			// 	Elem: []*pb.PathElem{
-			// 		{
-			// 			Name: "interfaces",
-			// 			Key:  interfaceKeyMap,
-			// 		},
-			// 		{
-			// 			Name: "interface",
-			// 			Key:  loopbackKeyMap,
-			// 		},
-			// 	},
-			// },
+			{
+				// Elem: []*pb.PathElem{
+				// 	{
+				// 		Name: "interfaces",
+				// 		Key:  interfaceKeyMap,
+				// 	},
+				// 	{
+				// 		Name: "interface",
+				// 		Key:  loopbackKeyMap,
+				// 	},
+				// },
+				Target: "192.168.0.2",
+			},
 		},
 		Type: pb.GetRequest_STATE,
 	}
@@ -117,166 +117,168 @@ func testing() {
 
 	c.Close()
 
-	// Send set request to storage
+	fmt.Println(response)
 
-	address = []string{"storage-service:11161"}
+	// // Send set request to storage
 
-	c, err = gclient.New(ctx, client.Destination{
-		Addrs:       address,
-		Target:      "storage-service",
-		Timeout:     time.Second * 5,
-		Credentials: nil,
-		TLS:         nil,
-	})
+	// address = []string{"storage-service:11161"}
 
-	if err != nil {
-		// fmt.Errorf("could not create a gNMI client: %v", err)
-		fmt.Print("Could not create a gNMI client: ")
-		fmt.Println(err)
-	}
+	// c, err = gclient.New(ctx, client.Destination{
+	// 	Addrs:       address,
+	// 	Target:      "storage-service",
+	// 	Timeout:     time.Second * 5,
+	// 	Credentials: nil,
+	// 	TLS:         nil,
+	// })
 
-	//
+	// if err != nil {
+	// 	// fmt.Errorf("could not create a gNMI client: %v", err)
+	// 	fmt.Print("Could not create a gNMI client: ")
+	// 	fmt.Println(err)
+	// }
 
-	if len(response.Notification) <= 0 {
-		return
-	}
+	// //
 
-	actionMap := map[string]string{}
-	actionMap["Action"] = "Store namespaces"
+	// if len(response.Notification) <= 0 {
+	// 	return
+	// }
 
-	setRequest := pb.SetRequest{
-		Update: []*pb.Update{
-			{
-				Path: &pb.Path{
-					Elem: []*pb.PathElem{
-						{
-							Name: "Action",
-							Key:  actionMap,
-						},
-					},
-				},
-				Val: response.Notification[0].Update[0].Val,
-			},
-		},
-	}
+	// actionMap := map[string]string{}
+	// actionMap["Action"] = "Store namespaces"
 
-	setResponse, err := c.(*gclient.Client).Set(ctx, &setRequest)
-	if err != nil {
-		fmt.Print("Target returned RPC error for Testing: ")
-		fmt.Println(err)
-	}
+	// setRequest := pb.SetRequest{
+	// 	Update: []*pb.Update{
+	// 		{
+	// 			Path: &pb.Path{
+	// 				Elem: []*pb.PathElem{
+	// 					{
+	// 						Name: "Action",
+	// 						Key:  actionMap,
+	// 					},
+	// 				},
+	// 			},
+	// 			Val: response.Notification[0].Update[0].Val,
+	// 		},
+	// 	},
+	// }
 
-	c.Close()
+	// setResponse, err := c.(*gclient.Client).Set(ctx, &setRequest)
+	// if err != nil {
+	// 	fmt.Print("Target returned RPC error for Testing: ")
+	// 	fmt.Println(err)
+	// }
 
-	fmt.Println(setResponse)
+	// c.Close()
 
-	if err != nil {
-		// fmt.Errorf("could not create a gNMI client: %v", err)
-		fmt.Print("Could not create a gNMI client: ")
-		fmt.Println(err)
-	}
+	// fmt.Println(setResponse)
 
-	// Send get request to storage
+	// if err != nil {
+	// 	// fmt.Errorf("could not create a gNMI client: %v", err)
+	// 	fmt.Print("Could not create a gNMI client: ")
+	// 	fmt.Println(err)
+	// }
 
-	address = []string{"storage-service:11161"}
+	// // Send get request to storage
 
-	c, err = gclient.New(ctx, client.Destination{
-		Addrs:       address,
-		Target:      "storage-service",
-		Timeout:     time.Second * 5,
-		Credentials: nil,
-		TLS:         nil,
-	})
+	// address = []string{"storage-service:11161"}
 
-	if err != nil {
-		// fmt.Errorf("could not create a gNMI client: %v", err)
-		fmt.Print("Could not create a gNMI client: ")
-		fmt.Println(err)
-	}
+	// c, err = gclient.New(ctx, client.Destination{
+	// 	Addrs:       address,
+	// 	Target:      "storage-service",
+	// 	Timeout:     time.Second * 5,
+	// 	Credentials: nil,
+	// 	TLS:         nil,
+	// })
 
-	getRequest = pb.GetRequest{
-		Path: []*pb.Path{
-			{
-				Elem: []*pb.PathElem{
-					{
-						Name: "interfaces",
-					},
-					{
-						Name: "interface",
-						Key: map[string]string{
-							"name": "sw0p1",
-						},
-					},
-					{
-						Name: "bridge-port",
-					},
-					{
-						Name: "traffic-class",
-					},
-					{
-						Name: "priority0",
-					},
-				},
-			},
-		},
-		Type: 4,
-	}
+	// if err != nil {
+	// 	// fmt.Errorf("could not create a gNMI client: %v", err)
+	// 	fmt.Print("Could not create a gNMI client: ")
+	// 	fmt.Println(err)
+	// }
 
-	response, err = c.(*gclient.Client).Get(ctx, &getRequest)
-	if err != nil {
-		fmt.Print("Target returned RPC error for Testing: ")
-		fmt.Println(err)
-	}
+	// getRequest = pb.GetRequest{
+	// 	Path: []*pb.Path{
+	// 		{
+	// 			Elem: []*pb.PathElem{
+	// 				{
+	// 					Name: "interfaces",
+	// 				},
+	// 				{
+	// 					Name: "interface",
+	// 					Key: map[string]string{
+	// 						"name": "sw0p1",
+	// 					},
+	// 				},
+	// 				{
+	// 					Name: "bridge-port",
+	// 				},
+	// 				{
+	// 					Name: "traffic-class",
+	// 				},
+	// 				{
+	// 					Name: "priority0",
+	// 				},
+	// 			},
+	// 		},
+	// 	},
+	// 	Type: 4,
+	// }
 
-	c.Close()
+	// response, err = c.(*gclient.Client).Get(ctx, &getRequest)
+	// if err != nil {
+	// 	fmt.Print("Target returned RPC error for Testing: ")
+	// 	fmt.Println(err)
+	// }
 
-	fmt.Println(response.Notification[0].Update[0])
+	// c.Close()
 
-	// Send get request to adapter
+	// fmt.Println(response.Notification[0].Update[0])
 
-	address = []string{"gnmi-netconf-adapter:11161"}
+	// // Send get request to adapter
 
-	c, err = gclient.New(ctx, client.Destination{
-		Addrs:       address,
-		Target:      "gnmi-netconf-adapter",
-		Timeout:     time.Second * 5,
-		Credentials: nil,
-		TLS:         nil,
-	})
+	// address = []string{"gnmi-netconf-adapter:11161"}
 
-	if err != nil {
-		// fmt.Errorf("could not create a gNMI client: %v", err)
-		fmt.Print("Could not create a gNMI client: ")
-		fmt.Println(err)
-	}
+	// c, err = gclient.New(ctx, client.Destination{
+	// 	Addrs:       address,
+	// 	Target:      "gnmi-netconf-adapter",
+	// 	Timeout:     time.Second * 5,
+	// 	Credentials: nil,
+	// 	TLS:         nil,
+	// })
 
-	getRequest = pb.GetRequest{
-		Path: []*pb.Path{
-			response.Notification[0].Update[0].Path,
-		},
-		Type: pb.GetRequest_STATE,
-	}
+	// if err != nil {
+	// 	// fmt.Errorf("could not create a gNMI client: %v", err)
+	// 	fmt.Print("Could not create a gNMI client: ")
+	// 	fmt.Println(err)
+	// }
 
-	response, err = c.(*gclient.Client).Get(ctx, &getRequest)
-	if err != nil {
-		fmt.Print("Target returned RPC error for Testing: ")
-		fmt.Println(err)
-	}
+	// getRequest = pb.GetRequest{
+	// 	Path: []*pb.Path{
+	// 		response.Notification[0].Update[0].Path,
+	// 	},
+	// 	Type: pb.GetRequest_STATE,
+	// }
 
-	c.Close()
+	// response, err = c.(*gclient.Client).Get(ctx, &getRequest)
+	// if err != nil {
+	// 	fmt.Print("Target returned RPC error for Testing: ")
+	// 	fmt.Println(err)
+	// }
 
-	// fmt.Println(response)
+	// c.Close()
 
-	var schema Schema
-	var schemaTree *SchemaTree
-	if len(response.Notification) > 0 {
-		json.Unmarshal(response.Notification[0].Update[0].Val.GetBytesVal(), &schema)
+	// // fmt.Println(response)
 
-		// fmt.Println(schema)
-		schemaTree = getTreeStructure(schema)
-	}
+	// var schema Schema
+	// var schemaTree *SchemaTree
+	// if len(response.Notification) > 0 {
+	// 	json.Unmarshal(response.Notification[0].Update[0].Val.GetBytesVal(), &schema)
 
-	printSchemaTree(schemaTree)
+	// 	// fmt.Println(schema)
+	// 	schemaTree = getTreeStructure(schema)
+	// }
+
+	// printSchemaTree(schemaTree)
 }
 
 func printSchemaTree(schemaTree *SchemaTree) {
