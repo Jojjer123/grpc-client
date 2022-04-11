@@ -27,7 +27,7 @@ func main() {
 
 	// setReq("Create", "192.168.0.2", "0")
 
-	time.Sleep(10 * time.Second)
+	time.Sleep(30 * time.Second)
 
 	fmt.Println("sending Delete")
 	setDelete("Delete", "192.168.0.1")
