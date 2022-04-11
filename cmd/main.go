@@ -17,11 +17,11 @@ import (
 )
 
 func main() {
-	setCreate("Create", "192.168.0.1", "0")
+	// setCreate("Create", "192.168.0.1", "0")
 
-	setCreate("Create", "192.168.0.2", "0")
+	// setCreate("Create", "192.168.0.2", "0")
 
-	setDelete("Delete", "192.168.0.2")
+	setDelete("Delete", "192.168.0.1")
 
 	// time.Sleep(10 * time.Second)
 	// setCreate("Create", "192.168.1.82", "1")
