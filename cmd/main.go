@@ -56,7 +56,7 @@ func main() {
 
 	// netconfConv(xmlString)
 
-	// testing()
+	testing()
 
 	for {
 		time.Sleep(10 * time.Second)
