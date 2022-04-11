@@ -17,16 +17,19 @@ import (
 )
 
 func main() {
+	fmt.Println("sending Create")
 	setReq("Create", "192.168.0.1", "0")
 
-	time.Sleep(12 * time.Second)
+	time.Sleep(20 * time.Second)
 
+	fmt.Println("sending Update")
 	setReq("Update", "192.168.0.1", "1")
 
 	// setReq("Create", "192.168.0.2", "0")
 
 	time.Sleep(10 * time.Second)
 
+	fmt.Println("sending Delete")
 	setDelete("Delete", "192.168.0.1")
 
 	// time.Sleep(10 * time.Second)
