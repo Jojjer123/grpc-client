@@ -17,7 +17,8 @@ import (
 )
 
 func main() {
-	setCreate("Create", "192.168.1.34", "0")
+	setCreate("Create", "192.168.0.1", "0")
+
 	// time.Sleep(10 * time.Second)
 	// setCreate("Create", "192.168.1.82", "1")
 
