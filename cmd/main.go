@@ -18,7 +18,7 @@ import (
 
 func main() {
 	fmt.Println("sending Create")
-	setReq("Create", "192.168.0.1", "0")
+	setReq("Create", "192.168.0.1", "2")
 
 	// time.Sleep(20 * time.Second)
 
