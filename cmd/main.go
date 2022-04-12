@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"time"
 
-	// "github.com/gogo/protobuf/proto"
 	"github.com/golang/protobuf/proto"
 	"github.com/openconfig/gnmi/client"
 	gclient "github.com/openconfig/gnmi/client/gnmi"
@@ -418,11 +417,11 @@ type SchemaEntry struct {
 func setDelete(action string, target string) {
 	ctx := context.Background()
 
-	address := []string{"device-monitor:11161"}
+	address := []string{"monitor-service:11161"}
 
 	c, err := gclient.New(ctx, client.Destination{
 		Addrs:       address,
-		Target:      "device-monitor",
+		Target:      "monitor-service",
 		Timeout:     time.Second * 5,
 		Credentials: nil,
 		TLS:         nil,
@@ -469,11 +468,11 @@ func setDelete(action string, target string) {
 func setReq(action string, target string, confIndex string) {
 	ctx := context.Background()
 
-	address := []string{"device-monitor:11161"}
+	address := []string{"monitor-service:11161"}
 
 	c, err := gclient.New(ctx, client.Destination{
 		Addrs:       address,
-		Target:      "device-monitor",
+		Target:      "monitor-service",
 		Timeout:     time.Second * 5,
 		Credentials: nil,
 		TLS:         nil,
@@ -527,11 +526,11 @@ func setReq(action string, target string, confIndex string) {
 func setUpdate(config types.ConfigRequest) {
 	ctx := context.Background()
 
-	address := []string{"device-monitor:11161"}
+	address := []string{"monitor-service:11161"}
 
 	c, err := gclient.New(ctx, client.Destination{
 		Addrs:       address,
-		Target:      "device-monitor",
+		Target:      "monitor-service",
 		Timeout:     time.Second * 5,
 		Credentials: nil,
 		TLS:         nil,
@@ -608,11 +607,11 @@ func setUpdate(config types.ConfigRequest) {
 func sub() {
 	ctx := context.Background()
 
-	address := []string{"device-monitor:11161"}
+	address := []string{"monitor-service:11161"}
 
 	c, err := gclient.New(ctx, client.Destination{
 		Addrs:       address,
-		Target:      "device-monitor",
+		Target:      "monitor-service",
 		Timeout:     time.Second * 5,
 		Credentials: nil,
 		TLS:         nil,
