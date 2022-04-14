@@ -16,58 +16,21 @@ import (
 )
 
 func main() {
-	fmt.Println("sending Create")
-	setReq("Create", "192.168.0.1", "2")
+	sub()
+	// fmt.Println("sending Create")
+	// setReq("Create", "192.168.0.1", "0")
+
+	// // time.Sleep(20 * time.Second)
+
+	// // fmt.Println("sending Update")
+	// // setReq("Update", "192.168.0.1", "1")
+
+	// // setReq("Create", "192.168.0.2", "0")
 
 	// time.Sleep(20 * time.Second)
 
-	// fmt.Println("sending Update")
-	// setReq("Update", "192.168.0.1", "1")
-
-	// setReq("Create", "192.168.0.2", "0")
-
-	time.Sleep(10 * time.Second)
-
-	fmt.Println("sending Delete")
-	setDelete("Delete", "192.168.0.1")
-
-	// time.Sleep(10 * time.Second)
-	// setCreate("Create", "192.168.1.82", "1")
-
-	// type Test struct {
-	// 	Name string
-	// 	Interval int
-	// 	Path string
-	// }
-
-	// COMMENTED FOR TESTING OF XML CONVERSION
-	// var config0 []types.DeviceCounters //struct
-
-	// c := types.DeviceCounters{
-	// 	Name:     "second",
-	// 	Interval: 123,
-	// 	Path:     "elem: <name: 'test'>",
-	// }
-
-	// config0 = append(config0, c)
-	// // config0[0].Name = "second"
-	// // config0[0].Interval = 123
-	// // config0[0].Path = "elem: <name: 'test'>"
-
-	// configs := []types.Conf{
-	// 	types.Conf{
-	// 		Counter: config0,
-	// 	},
-	// }
-
-	// conf := types.ConfigRequest{
-	// 	DeviceIP: "192.168.1.82",
-	// 	Configs:  configs,
-	// }
-
-	// setUpdate(conf)
-
-	// netconfConv(xmlString)
+	// fmt.Println("sending Delete")
+	// setDelete("Delete", "192.168.0.1")
 
 	// testing()
 
@@ -639,6 +602,8 @@ func sub() {
 		ProtoHandler: protoCallback,
 		// ...
 	}
+
+	fmt.Println(query)
 
 	err = c.(*gclient.Client).Subscribe(ctx, query)
 
