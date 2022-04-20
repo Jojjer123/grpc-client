@@ -16,9 +16,10 @@ import (
 )
 
 func main() {
-	sub()
+	// sub()
+
 	// fmt.Println("sending Create")
-	// setReq("Create", "192.168.0.1", "0")
+	setReq("Create", "192.168.0.1", "0")
 
 	// // time.Sleep(20 * time.Second)
 
