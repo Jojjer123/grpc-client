@@ -61,11 +61,11 @@ func getFullConfig() {
 	}
 
 	getRequest := pb.GetRequest{
-		// Path: []*pb.Path{
-		// 	{
-		// 		Target: "192.168.0.2",
-		// 	},
-		// },
+		Path: []*pb.Path{
+			{
+				Target: "192.168.0.1",
+			},
+		},
 		Type: pb.GetRequest_STATE,
 	}
 
