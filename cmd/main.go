@@ -16,28 +16,68 @@ import (
 )
 
 func main() {
-	// sub()
+	getFullConfig()
+	// // sub()
 
 	// fmt.Println("sending Create")
-	setReq("Create", "192.168.0.1", "0")
+	// setReq("Create", "192.168.0.1", "0")
 
-	// // time.Sleep(20 * time.Second)
+	// // // time.Sleep(20 * time.Second)
 
-	// // fmt.Println("sending Update")
-	// // setReq("Update", "192.168.0.1", "1")
+	// // // fmt.Println("sending Update")
+	// // // setReq("Update", "192.168.0.1", "1")
 
-	// // setReq("Create", "192.168.0.2", "0")
+	// // // setReq("Create", "192.168.0.2", "0")
 
 	// time.Sleep(20 * time.Second)
 
 	// fmt.Println("sending Delete")
-	// setDelete("Delete", "192.168.0.1")
+	// setReq("Delete", "192.168.0.1")
 
-	// testing()
+	// // testing()
 
 	for {
 		time.Sleep(10 * time.Second)
 	}
+}
+
+func getFullConfig() {
+	ctx := context.Background()
+
+	address := []string{"gnmi-netconf-adapter:11161"}
+
+	c, err := gclient.New(ctx, client.Destination{
+		Addrs:       address,
+		Target:      "gnmi-netconf-adapter",
+		Timeout:     time.Second * 5,
+		Credentials: nil,
+		TLS:         nil,
+	})
+
+	if err != nil {
+		// fmt.Errorf("could not create a gNMI client: %v", err)
+		fmt.Print("Could not create a gNMI client: ")
+		fmt.Println(err)
+	}
+
+	getRequest := pb.GetRequest{
+		// Path: []*pb.Path{
+		// 	{
+		// 		Target: "192.168.0.2",
+		// 	},
+		// },
+		Type: pb.GetRequest_STATE,
+	}
+
+	response, err := c.(*gclient.Client).Get(ctx, &getRequest)
+	if err != nil {
+		fmt.Print("Target returned RPC error for Testing: ")
+		fmt.Println(err)
+	}
+
+	c.Close()
+
+	fmt.Println(response)
 }
 
 func testing() {
@@ -378,7 +418,58 @@ type SchemaEntry struct {
 	Value     string
 }
 
-func setDelete(action string, target string) {
+// func setDelete(action string, target string) {
+// 	ctx := context.Background()
+//
+// 	address := []string{"monitor-service:11161"}
+//
+// 	c, err := gclient.New(ctx, client.Destination{
+// 		Addrs:       address,
+// 		Target:      "monitor-service",
+// 		Timeout:     time.Second * 5,
+// 		Credentials: nil,
+// 		TLS:         nil,
+// 	})
+//
+// 	if err != nil {
+// 		// fmt.Errorf("could not create a gNMI client: %v", err)
+// 		fmt.Print("Could not create a gNMI client: ")
+// 		fmt.Println(err)
+// 	}
+//
+// 	actionMap := make(map[string]string)
+// 	actionMap["Action"] = action
+//
+// 	setRequest := pb.SetRequest{
+// 		Update: []*pb.Update{
+// 			{
+// 				Path: &pb.Path{
+// 					Target: target,
+// 					Elem: []*pb.PathElem{
+// 						{
+// 							Name: "Action",
+// 							Key:  actionMap,
+// 						},
+// 					},
+// 				},
+// 			},
+// 		},
+// 	}
+//
+// 	response, err := c.(*gclient.Client).Set(ctx, &setRequest)
+//
+// 	fmt.Print("Response from device-monitor is: ")
+// 	fmt.Println(response)
+//
+// 	if err != nil {
+// 		fmt.Print("Target returned RPC error for Set: ")
+// 		fmt.Println(err)
+// 	}
+//
+// 	fmt.Println("Client connected successfully")
+// }
+
+func setReq(action string, target string, confIndex ...string) {
 	ctx := context.Background()
 
 	address := []string{"monitor-service:11161"}
@@ -397,9 +488,6 @@ func setDelete(action string, target string) {
 		fmt.Println(err)
 	}
 
-	actionMap := make(map[string]string)
-	actionMap["Action"] = action
-
 	setRequest := pb.SetRequest{
 		Update: []*pb.Update{
 			{
@@ -408,7 +496,9 @@ func setDelete(action string, target string) {
 					Elem: []*pb.PathElem{
 						{
 							Name: "Action",
-							Key:  actionMap,
+							Key: map[string]string{
+								"Action": action,
+							},
 						},
 					},
 				},
@@ -416,62 +506,13 @@ func setDelete(action string, target string) {
 		},
 	}
 
-	response, err := c.(*gclient.Client).Set(ctx, &setRequest)
-
-	fmt.Print("Response from device-monitor is: ")
-	fmt.Println(response)
-
-	if err != nil {
-		fmt.Print("Target returned RPC error for Set: ")
-		fmt.Println(err)
-	}
-
-	fmt.Println("Client connected successfully")
-}
-
-func setReq(action string, target string, confIndex string) {
-	ctx := context.Background()
-
-	address := []string{"monitor-service:11161"}
-
-	c, err := gclient.New(ctx, client.Destination{
-		Addrs:       address,
-		Target:      "monitor-service",
-		Timeout:     time.Second * 5,
-		Credentials: nil,
-		TLS:         nil,
-	})
-
-	if err != nil {
-		// fmt.Errorf("could not create a gNMI client: %v", err)
-		fmt.Print("Could not create a gNMI client: ")
-		fmt.Println(err)
-	}
-
-	actionMap := make(map[string]string)
-	actionMap["Action"] = action
-
-	configMap := make(map[string]string)
-	configMap["ConfigIndex"] = confIndex
-
-	setRequest := pb.SetRequest{
-		Update: []*pb.Update{
-			{
-				Path: &pb.Path{
-					Target: target,
-					Elem: []*pb.PathElem{
-						{
-							Name: "Action",
-							Key:  actionMap,
-						},
-						{
-							Name: "ConfigIndex",
-							Key:  configMap,
-						},
-					},
-				},
+	if confIndex != nil {
+		setRequest.Update[0].Path.Elem = append(setRequest.Update[0].Path.Elem, &pb.PathElem{
+			Name: "ConfigIndex",
+			Key: map[string]string{
+				"ConfigIndex": confIndex[0],
 			},
-		},
+		})
 	}
 
 	response, err := c.(*gclient.Client).Set(ctx, &setRequest)
@@ -506,29 +547,22 @@ func setUpdate(config types.ConfigRequest) {
 		fmt.Println(err)
 	}
 
-	var updateList []*pb.Update
-
-	actionMap := make(map[string]string)
-	actionMap["Action"] = "Change config"
-
-	pathElements := []*pb.PathElem{}
-
-	pathElements = append(pathElements, &pb.PathElem{
-		Name: "Action",
-		Key:  actionMap,
-	})
-
-	configMap := make(map[string]string)
-	configMap["DeviceIP"] = config.DeviceIP
-	configMap["DeviceName"] = config.DeviceName
-	configMap["Protocol"] = config.Protocol
-
-	// pathElements := []*pb.PathElem{}
-
-	pathElements = append(pathElements, &pb.PathElem{
-		Name: "Info",
-		Key:  configMap,
-	})
+	pathElements := []*pb.PathElem{
+		{
+			Name: "Action",
+			Key: map[string]string{
+				"Action": "Change config",
+			},
+		},
+		{
+			Name: "Info",
+			Key: map[string]string{
+				"DeviceIP":   config.DeviceIP,
+				"DeviceName": config.DeviceName,
+				"Protocol":   config.Protocol,
+			},
+		},
+	}
 
 	for confIndex, conf := range config.Configs {
 		counterMap := make(map[string]string)
@@ -544,17 +578,15 @@ func setUpdate(config types.ConfigRequest) {
 		})
 	}
 
-	update := pb.Update{
-		Path: &pb.Path{
-			Target: config.DeviceIP,
-			Elem:   pathElements,
-		},
-	}
-
-	updateList = append(updateList, &update)
-
 	setRequest := pb.SetRequest{
-		Update: updateList,
+		Update: []*pb.Update{
+			{
+				Path: &pb.Path{
+					Target: config.DeviceIP,
+					Elem:   pathElements,
+				},
+			},
+		},
 	}
 
 	response, err := c.(*gclient.Client).Set(ctx, &setRequest)
