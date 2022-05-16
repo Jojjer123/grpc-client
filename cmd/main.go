@@ -16,25 +16,25 @@ import (
 )
 
 func main() {
-	getFullConfig()
-	// // sub()
+	// getFullConfig()
+	// sub()
 
-	// fmt.Println("sending Create")
-	// setReq("Create", "192.168.0.1", "0")
+	fmt.Println("sending Create")
+	setReq("Create", "192.168.0.1", "0")
 
-	// // // time.Sleep(20 * time.Second)
+	// // time.Sleep(20 * time.Second)
 
-	// // // fmt.Println("sending Update")
-	// // // setReq("Update", "192.168.0.1", "1")
+	// // fmt.Println("sending Update")
+	// // setReq("Update", "192.168.0.1", "1")
 
-	// // // setReq("Create", "192.168.0.2", "0")
+	// // setReq("Create", "192.168.0.2", "0")
 
-	// time.Sleep(20 * time.Second)
+	time.Sleep(20 * time.Second)
 
-	// fmt.Println("sending Delete")
-	// setReq("Delete", "192.168.0.1")
+	fmt.Println("sending Delete")
+	setReq("Delete", "192.168.0.1")
 
-	// // testing()
+	// testing()
 
 	for {
 		time.Sleep(10 * time.Second)
