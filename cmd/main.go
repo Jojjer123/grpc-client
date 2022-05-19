@@ -16,32 +16,58 @@ import (
 )
 
 func main() {
-	getFullConfig()
+	// getFullConfig()
 	// sub()
 
-	// fmt.Println("Start batch monitoring on switch_one, switch_two, and switch_three")
-	// setReq("Start", "192.168.0.1", "0")
-	// setReq("Start", "192.168.0.2", "0")
-	// setReq("Start", "192.168.0.3", "0")
-	// time.Sleep(10 * time.Minute)
-	// setReq("Stop", "192.168.0.1")
-	// setReq("Stop", "192.168.0.2")
-	// setReq("Stop", "192.168.0.3")
+	fmt.Println("Start batch monitoring on switch_one, switch_two, and switch_three")
+	setReq("Start", "192.168.0.1", "0")
+	setReq("Start", "192.168.0.2", "0")
+	setReq("Start", "192.168.0.3", "0")
+	time.Sleep(10 * time.Minute)
+	setReq("Stop", "192.168.0.1")
+	setReq("Stop", "192.168.0.2")
+	setReq("Stop", "192.168.0.3")
 
-	// time.Sleep(30 * time.Second)
+	time.Sleep(30 * time.Second)
 
-	// fmt.Println("Start non-batch monitoring on switch_one, switch_two, and switch_three")
-	// setReq("Start", "192.168.0.1", "1")
-	// setReq("Start", "192.168.0.2", "1")
-	// setReq("Start", "192.168.0.3", "1")
-	// time.Sleep(10 * time.Minute)
-	// setReq("Stop", "192.168.0.1")
-	// setReq("Stop", "192.168.0.2")
-	// setReq("Stop", "192.168.0.3")
+	fmt.Println("Start non-batch monitoring on switch_one, switch_two, and switch_three")
+	setReq("Start", "192.168.0.1", "1")
+	setReq("Start", "192.168.0.2", "1")
+	setReq("Start", "192.168.0.3", "1")
+	time.Sleep(10 * time.Minute)
+	setReq("Stop", "192.168.0.1")
+	setReq("Stop", "192.168.0.2")
+	setReq("Stop", "192.168.0.3")
 
-	// TODO: Need to test updating configuration, to get delay when swapping it.
+	time.Sleep(30 * time.Second)
 
-	// setReq("Update", "192.168.0.1", "1")
+	setReq("Start", "192.168.0.1", "0")
+	setReq("Update", "192.168.0.1", "1")
+
+	setReq("Start", "192.168.0.2", "0")
+	setReq("Update", "192.168.0.1", "1")
+
+	setReq("Start", "192.168.0.3", "0")
+	setReq("Update", "192.168.0.1", "1")
+
+	time.Sleep(10 * time.Second)
+
+	setReq("Start", "192.168.0.1", "0")
+	setReq("Update", "192.168.0.1", "1")
+
+	setReq("Start", "192.168.0.2", "0")
+	setReq("Update", "192.168.0.1", "1")
+
+	setReq("Start", "192.168.0.3", "0")
+	setReq("Update", "192.168.0.1", "1")
+
+	time.Sleep(10 * time.Second)
+
+	setReq("Stop", "192.168.0.1")
+	setReq("Stop", "192.168.0.2")
+	setReq("Stop", "192.168.0.3")
+
+	fmt.Println("Done!")
 
 	// testing()
 
