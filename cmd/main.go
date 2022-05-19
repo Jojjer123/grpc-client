@@ -19,8 +19,8 @@ func main() {
 	// getFullConfig()
 	// sub()
 
-	fmt.Println("sending Create")
-	setReq("Create", "192.168.0.1", "0")
+	fmt.Println("sending Start")
+	setReq("Start", "192.168.0.1", "0")
 
 	// // time.Sleep(20 * time.Second)
 
@@ -31,8 +31,8 @@ func main() {
 
 	time.Sleep(20 * time.Second)
 
-	fmt.Println("sending Delete")
-	setReq("Delete", "192.168.0.1")
+	fmt.Println("sending Stop")
+	setReq("Stop", "192.168.0.1")
 
 	// testing()
 
