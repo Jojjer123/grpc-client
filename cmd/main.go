@@ -39,33 +39,33 @@ func main() {
 	setReq("Stop", "192.168.0.2")
 	setReq("Stop", "192.168.0.3")
 
-	time.Sleep(5 * time.Minute)
+	// time.Sleep(5 * time.Minute)
 
-	setReq("Start", "192.168.0.1", "0")
-	setReq("Update", "192.168.0.1", "1")
+	// setReq("Start", "192.168.0.1", "0")
+	// setReq("Update", "192.168.0.1", "1")
 
-	setReq("Start", "192.168.0.2", "0")
-	setReq("Update", "192.168.0.1", "1")
+	// setReq("Start", "192.168.0.2", "0")
+	// setReq("Update", "192.168.0.1", "1")
 
-	setReq("Start", "192.168.0.3", "0")
-	setReq("Update", "192.168.0.1", "1")
+	// setReq("Start", "192.168.0.3", "0")
+	// setReq("Update", "192.168.0.1", "1")
 
-	time.Sleep(5 * time.Minute)
+	// time.Sleep(5 * time.Minute)
 
-	setReq("Start", "192.168.0.1", "0")
-	setReq("Update", "192.168.0.1", "1")
+	// setReq("Start", "192.168.0.1", "0")
+	// setReq("Update", "192.168.0.1", "1")
 
-	setReq("Start", "192.168.0.2", "0")
-	setReq("Update", "192.168.0.1", "1")
+	// setReq("Start", "192.168.0.2", "0")
+	// setReq("Update", "192.168.0.1", "1")
 
-	setReq("Start", "192.168.0.3", "0")
-	setReq("Update", "192.168.0.1", "1")
+	// setReq("Start", "192.168.0.3", "0")
+	// setReq("Update", "192.168.0.1", "1")
 
-	time.Sleep(5 * time.Minute)
+	// time.Sleep(5 * time.Minute)
 
-	setReq("Stop", "192.168.0.1")
-	setReq("Stop", "192.168.0.2")
-	setReq("Stop", "192.168.0.3")
+	// setReq("Stop", "192.168.0.1")
+	// setReq("Stop", "192.168.0.2")
+	// setReq("Stop", "192.168.0.3")
 
 	fmt.Println("Done!")
 
