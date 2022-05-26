@@ -51,38 +51,38 @@ func main() {
 	fmt.Println("Starting to update now")
 
 	setReq("Update", "192.168.0.1", "1")
-	setReq("Update", "192.168.0.1", "1")
-	setReq("Update", "192.168.0.1", "1")
+	setReq("Update", "192.168.0.2", "1")
+	setReq("Update", "192.168.0.3", "1")
 
 	time.Sleep(30 * time.Second)
 
 	fmt.Println("Updating second time")
 
 	setReq("Update", "192.168.0.1", "0")
-	setReq("Update", "192.168.0.1", "0")
-	setReq("Update", "192.168.0.1", "0")
+	setReq("Update", "192.168.0.2", "0")
+	setReq("Update", "192.168.0.3", "0")
 
 	time.Sleep(30 * time.Second)
 
 	fmt.Println("Updating third time")
 
 	setReq("Update", "192.168.0.1", "1")
-	setReq("Update", "192.168.0.1", "1")
-	setReq("Update", "192.168.0.1", "1")
+	setReq("Update", "192.168.0.2", "1")
+	setReq("Update", "192.168.0.3", "1")
 
 	fmt.Println("Updating fourth time")
 
 	setReq("Update", "192.168.0.1", "0")
-	setReq("Update", "192.168.0.1", "0")
-	setReq("Update", "192.168.0.1", "0")
+	setReq("Update", "192.168.0.2", "0")
+	setReq("Update", "192.168.0.3", "0")
 
 	time.Sleep(30 * time.Second)
 
 	fmt.Println("Updating fifth and final time")
 
 	setReq("Update", "192.168.0.1", "1")
-	setReq("Update", "192.168.0.1", "1")
-	setReq("Update", "192.168.0.1", "1")
+	setReq("Update", "192.168.0.2", "1")
+	setReq("Update", "192.168.0.3", "1")
 
 	// fmt.Println("Start non-batch monitoring on switch_one, switch_two, and switch_three")
 	// setReq("Start", "192.168.0.1", "1")
