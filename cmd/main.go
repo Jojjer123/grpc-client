@@ -54,7 +54,7 @@ func main() {
 	setReq("Update", "192.168.0.2", "1")
 	setReq("Update", "192.168.0.3", "1")
 
-	time.Sleep(10 * time.Second)
+	time.Sleep(30 * time.Second)
 
 	fmt.Println("Updating second time")
 
@@ -62,7 +62,7 @@ func main() {
 	setReq("Update", "192.168.0.2", "0")
 	setReq("Update", "192.168.0.3", "0")
 
-	time.Sleep(10 * time.Second)
+	time.Sleep(60 * time.Second)
 
 	fmt.Println("Updating third time")
 
@@ -70,7 +70,7 @@ func main() {
 	setReq("Update", "192.168.0.2", "1")
 	setReq("Update", "192.168.0.3", "1")
 
-	time.Sleep(10 * time.Second)
+	time.Sleep(30 * time.Second)
 
 	fmt.Println("Updating fourth time")
 
@@ -78,7 +78,7 @@ func main() {
 	setReq("Update", "192.168.0.2", "0")
 	setReq("Update", "192.168.0.3", "0")
 
-	time.Sleep(10 * time.Second)
+	time.Sleep(60 * time.Second)
 
 	fmt.Println("Updating fifth and final time")
 
