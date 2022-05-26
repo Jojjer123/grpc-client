@@ -586,7 +586,7 @@ func setReq(action string, target string, confIndex ...string) {
 		fmt.Println(err)
 	}
 
-	fmt.Println("Client connected successfully")
+	// fmt.Println("Client connected successfully")
 }
 
 func setUpdate(config types.ConfigRequest) {
