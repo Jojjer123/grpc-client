@@ -30,14 +30,14 @@ func main() {
 
 	// time.Sleep(1 * time.Minute)
 
-	fmt.Println("Start batch monitoring on switch_one, switch_two, and switch_three")
-	setReq("Start", "192.168.0.1", "0")
-	setReq("Start", "192.168.0.2", "0")
-	setReq("Start", "192.168.0.3", "0")
-	time.Sleep(1 * time.Minute)
-	setReq("Stop", "192.168.0.1")
-	setReq("Stop", "192.168.0.2")
-	setReq("Stop", "192.168.0.3")
+	// fmt.Println("Start batch monitoring on switch_one, switch_two, and switch_three")
+	// setReq("Start", "192.168.0.1", "0")
+	// setReq("Start", "192.168.0.2", "0")
+	// setReq("Start", "192.168.0.3", "0")
+	// time.Sleep(1 * time.Minute)
+	// setReq("Stop", "192.168.0.1")
+	// setReq("Stop", "192.168.0.2")
+	// setReq("Stop", "192.168.0.3")
 
 	// time.Sleep(1 * time.Minute)
 
@@ -94,6 +94,10 @@ func main() {
 	// setReq("Stop", "192.168.0.1")
 	// setReq("Stop", "192.168.0.2")
 	// setReq("Stop", "192.168.0.3")
+
+	setReq("Start", "192.168.0.1", "2")
+	time.Sleep(1 * time.Minute)
+	setReq("Stop", "192.168.0.1")
 
 	fmt.Println("Done!")
 
