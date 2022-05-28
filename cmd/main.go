@@ -95,8 +95,8 @@ func main() {
 	// setReq("Stop", "192.168.0.2")
 	// setReq("Stop", "192.168.0.3")
 
-	setReq("Start", "192.168.0.1", "2")
-	time.Sleep(1 * time.Minute)
+	setReq("Start", "192.168.0.1", "0")
+	time.Sleep(30 * time.Second)
 	setReq("Stop", "192.168.0.1")
 
 	fmt.Println("Done!")
