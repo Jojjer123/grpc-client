@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"strconv"
 	"time"
 
@@ -13,12 +14,84 @@ import (
 	pb "github.com/openconfig/gnmi/proto/gnmi"
 
 	types "github.com/onosproject/grpc-client/Types"
+	"golang.org/x/crypto/ssh"
+
+	"github.com/vrgakos/go-netconf-client/netconf"
+	"github.com/vrgakos/go-netconf-client/netconf/message"
 )
 
 func main() {
-	// getFullConfig()
-	// sub()
 
+	testNetconfClient()
+
+	fmt.Println("Done!")
+
+	// testing()
+
+	for {
+		time.Sleep(10 * time.Second)
+	}
+}
+
+func testNetconfClient() {
+	session := createSession()
+	defer session.Close()
+	execRPC(session)
+}
+
+func execRPC(session *netconf.Session) {
+	gt := message.NewGet("subtree", `<interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+	<interface>
+	  <name>sw0p1</name>
+	  <ethernet xmlns="urn:ieee:std:802.3:yang:ieee802-ethernet-interface">
+		<statistics>
+		  <frame>
+			<in-total-frames>
+			</in-total-frames>
+		  </frame>
+		</statistics>
+	  </ethernet>
+	</interface>
+  </interfaces>")`)
+	start := time.Now().UnixNano()
+	session.AsyncRPC(gt, defaultLogRpcReplyCallback(gt.MessageID, start))
+
+	d2 := message.NewCloseSession()
+	start2 := time.Now().UnixNano()
+	session.AsyncRPC(d2, defaultLogRpcReplyCallback(d2.MessageID, start2))
+
+	session.Listener.WaitForMessages()
+}
+
+func createSession() *netconf.Session {
+	sshConfig := &ssh.ClientConfig{
+		User:            "root",
+		Auth:            []ssh.AuthMethod{ssh.Password("")},
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+	}
+	s, err := netconf.DialSSH("192.168.0.1:830", sshConfig)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return s
+}
+
+func defaultLogRpcReplyCallback(eventId string, start int64) netconf.Callback {
+	return func(event netconf.Event) {
+		reply := event.RPCReply()
+		fmt.Printf("delay for event %v: %v\n", eventId, time.Now().UnixNano()-start)
+		if reply == nil {
+			println("Failed to execute RPC")
+		}
+		if event.EventID() == eventId {
+			println("Successfully executed RPC")
+			println(reply.RawReply)
+		}
+	}
+}
+
+func testSequences() {
 	// fmt.Println("Start batch monitoring on switch_one, switch_two, and switch_three")
 	// setReq("Start", "192.168.0.1", "0")
 	// setReq("Start", "192.168.0.2", "0")
@@ -98,14 +171,6 @@ func main() {
 	setReq("Start", "192.168.0.1", "0")
 	time.Sleep(30 * time.Second)
 	setReq("Stop", "192.168.0.1")
-
-	fmt.Println("Done!")
-
-	// testing()
-
-	for {
-		time.Sleep(10 * time.Second)
-	}
 }
 
 func getFullConfig() {
