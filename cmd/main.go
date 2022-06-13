@@ -45,7 +45,7 @@ func testNetconfClient() {
 func execRPC(session *netconf.Session) {
 	// gt := message.NewGet("", "")
 	// gt := message.NewGet("", "<interfaces xmlns=\"urn:ietf:params:xml:ns:yang:ietf-interfaces\"><interface><name>sw0p1</name><ethernet xmlns=\"urn:ieee:std:802.3:yang:ieee802-ethernet-interface\"><statistics><frame><in-total-frames/></frame></statistics></ethernet></interface></interfaces>")
-	gt := message.NewRPC("<get><filter type=\"subtree\"><interfaces xmlns=\"urn:ietf:params:xml:ns:yang:ietf-interfaces\"><interface><name>sw0p1</name><ethernet xmlns=\"urn:ieee:std:802.3:yang:ieee802-ethernet-interface\"><statistics><frame><in-total-frames></in-total-frames></frame></statistics></ethernet></interface></interfaces></filter></get>")
+	gt := message.NewRPC(`<get><filter type="subtree"><interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces"><interface><name>sw0p1</name><ethernet xmlns="urn:ieee:std:802.3:yang:ieee802-ethernet-interface"><statistics><frame><in-total-frames></in-total-frames></frame></statistics></ethernet></interface></interfaces></filter></get>`)
 	fmt.Println("Message created!")
 	start := time.Now().UnixNano()
 	session.AsyncRPC(gt, defaultLogRpcReplyCallback(gt.MessageID, start))
