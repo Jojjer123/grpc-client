@@ -58,7 +58,7 @@ func execRPC(session *netconf.Session) {
   </interfaces>")`)
 	fmt.Println("Message created!")
 	start := time.Now().UnixNano()
-	reply, err := session.SyncRPC(gt, 1)
+	reply, err := session.SyncRPC(gt, 10)
 	fmt.Printf("delay: %v\n", time.Now().UnixNano()-start)
 	if err != nil {
 		fmt.Printf("Failed RPC: %v\n", err)
