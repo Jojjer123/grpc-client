@@ -69,9 +69,9 @@ func execRPC(session *netconf.Session) {
 	// 	fmt.Println(reply.RawReply)
 	// }
 
-	d2 := message.NewCloseSession()
-	start2 := time.Now().UnixNano()
-	session.AsyncRPC(d2, defaultLogRpcReplyCallback(d2.MessageID, start2))
+	// d2 := message.NewCloseSession()
+	// start2 := time.Now().UnixNano()
+	// session.AsyncRPC(d2, defaultLogRpcReplyCallback(d2.MessageID, start2))
 
 	session.Listener.WaitForMessages()
 }
