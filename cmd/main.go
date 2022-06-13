@@ -60,6 +60,8 @@ func execRPC(session *netconf.Session) {
 	start := time.Now().UnixNano()
 	session.AsyncRPC(gt, defaultLogRpcReplyCallback(gt.MessageID, start))
 	time.Sleep(100 * time.Millisecond)
+
+	fmt.Printf("MessageID: %v\n", gt.MessageID)
 	// fmt.Printf("delay: %v\n", time.Now().UnixNano()-start)
 	// if err != nil {
 	// 	fmt.Printf("Failed RPC: %v\n", err)
