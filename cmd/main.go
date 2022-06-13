@@ -84,6 +84,12 @@ func createSession() *netconf.Session {
 		log.Fatal(err)
 	}
 
+	capabilities := netconf.DefaultCapabilities
+	err = s.SendHello(&message.Hello{Capabilities: capabilities})
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	return s
 }
 
