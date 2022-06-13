@@ -58,13 +58,14 @@ func execRPC(session *netconf.Session) {
   </interfaces>")`)
 	fmt.Println("Message created!")
 	start := time.Now().UnixNano()
-	reply, err := session.SyncRPC(gt, 10)
-	fmt.Printf("delay: %v\n", time.Now().UnixNano()-start)
-	if err != nil {
-		fmt.Printf("Failed RPC: %v\n", err)
-	} else {
-		fmt.Println(reply.RawReply)
-	}
+	session.AsyncRPC(gt, defaultLogRpcReplyCallback(gt.MessageID, start))
+	time.Sleep(100 * time.Millisecond)
+	// fmt.Printf("delay: %v\n", time.Now().UnixNano()-start)
+	// if err != nil {
+	// 	fmt.Printf("Failed RPC: %v\n", err)
+	// } else {
+	// 	fmt.Println(reply.RawReply)
+	// }
 
 	d2 := message.NewCloseSession()
 	start2 := time.Now().UnixNano()
