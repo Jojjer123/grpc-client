@@ -21,6 +21,7 @@ import (
 )
 
 func main() {
+	fmt.Println("Starting to test client...")
 
 	testNetconfClient()
 
@@ -34,7 +35,9 @@ func main() {
 }
 
 func testNetconfClient() {
+	fmt.Println("Creating session...")
 	session := createSession()
+	fmt.Println("Session created!")
 	defer session.Close()
 	execRPC(session)
 }
@@ -53,12 +56,19 @@ func execRPC(session *netconf.Session) {
 	  </ethernet>
 	</interface>
   </interfaces>")`)
+	fmt.Println("Message created!")
 	start := time.Now().UnixNano()
-	session.AsyncRPC(gt, defaultLogRpcReplyCallback(gt.MessageID, start))
+	reply, err := session.SyncRPC(gt, 5)
+	fmt.Printf("delay: %v\n", time.Now().UnixNano()-start)
+	if err != nil {
+		fmt.Printf("Failed RPC: %v\n", err)
+	} else {
+		fmt.Println(reply)
+	}
 
-	d2 := message.NewCloseSession()
-	start2 := time.Now().UnixNano()
-	session.AsyncRPC(d2, defaultLogRpcReplyCallback(d2.MessageID, start2))
+	// d2 := message.NewCloseSession()
+	// start2 := time.Now().UnixNano()
+	// reply2_ err2 := session.SyncRPC(d2, 5)
 
 	session.Listener.WaitForMessages()
 }
@@ -77,19 +87,19 @@ func createSession() *netconf.Session {
 	return s
 }
 
-func defaultLogRpcReplyCallback(eventId string, start int64) netconf.Callback {
-	return func(event netconf.Event) {
-		reply := event.RPCReply()
-		fmt.Printf("delay for event %v: %v\n", eventId, time.Now().UnixNano()-start)
-		if reply == nil {
-			println("Failed to execute RPC")
-		}
-		if event.EventID() == eventId {
-			println("Successfully executed RPC")
-			println(reply.RawReply)
-		}
-	}
-}
+// func defaultLogRpcReplyCallback(eventId string, start int64) netconf.Callback {
+// 	return func(event netconf.Event) {
+// 		reply := event.RPCReply()
+// 		fmt.Printf("delay for event %v: %v\n", eventId, time.Now().UnixNano()-start)
+// 		if reply == nil {
+// 			println("Failed to execute RPC")
+// 		}
+// 		if event.EventID() == eventId {
+// 			println("Successfully executed RPC")
+// 			println(reply.RawReply)
+// 		}
+// 	}
+// }
 
 func testSequences() {
 	// fmt.Println("Start batch monitoring on switch_one, switch_two, and switch_three")
