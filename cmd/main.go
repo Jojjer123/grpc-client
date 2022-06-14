@@ -21,13 +21,16 @@ import (
 )
 
 func main() {
-	fmt.Println("Starting to test client...")
+	fmt.Println("Starting to test client")
 
-	testNetconfClient()
+	setReq("Start", "192.168.0.1", "0")
+	time.Sleep(30 * time.Second)
+
+	// setReq("Update", "192.168.0.1", "1")
+
+	setReq("Stop", "192.168.0.1")
 
 	fmt.Println("Done!")
-
-	// testing()
 
 	for {
 		time.Sleep(10 * time.Second)
