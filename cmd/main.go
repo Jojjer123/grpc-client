@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/Juniper/go-netconf/netconf"
 	"github.com/golang/protobuf/proto"
 	"github.com/openconfig/gnmi/client"
 	gclient "github.com/openconfig/gnmi/client/gnmi"
@@ -15,20 +16,45 @@ import (
 
 	types "github.com/onosproject/grpc-client/Types"
 	"golang.org/x/crypto/ssh"
-
-	"github.com/vrgakos/go-netconf-client/netconf"
-	"github.com/vrgakos/go-netconf-client/netconf/message"
+	// "github.com/vrgakos/go-netconf-client/netconf"
+	// "github.com/vrgakos/go-netconf-client/netconf/message"
 )
 
 func main() {
 	fmt.Println("Starting to test client")
 
-	setReq("Start", "192.168.0.1", "0")
-	time.Sleep(30 * time.Second)
+	// setReq("Start", "192.168.0.1", "0")
+	// time.Sleep(30 * time.Second)
 
-	// setReq("Update", "192.168.0.1", "1")
+	// // setReq("Update", "192.168.0.1", "1")
 
-	setReq("Stop", "192.168.0.1")
+	// setReq("Stop", "192.168.0.1")
+
+	sshConfig := &ssh.ClientConfig{
+		User:            "root",
+		Auth:            []ssh.AuthMethod{ssh.Password("")},
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+	}
+
+	s, err := netconf.DialSSH("192.168.0.1", sshConfig)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer s.Close()
+
+	// fmt.Println(s.ServerCapabilities)
+	// fmt.Println(s.SessionID)
+
+	capabilities := netconf.DefaultCapabilities
+	s.Transport.SendHello(&netconf.HelloMessage{Capabilities: capabilities})
+
+	reply, err := s.Exec(netconf.RawMethod("<get><filter type='subtree'><interfaces xmlns='urn:ietf:params:xml:ns:yang:ietf-interfaces'><interface><name>sw0p1</name><ethernet xmlns='urn:ieee:std:802.3:yang:ieee802-ethernet-interface'><statistics><frame><in-total-frames></in-total-frames></frame></statistics></ethernet></interface></interfaces></filter></get>"))
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("Reply: %+v", reply)
 
 	fmt.Println("Done!")
 
@@ -37,71 +63,71 @@ func main() {
 	}
 }
 
-func testNetconfClient() {
-	fmt.Println("Creating session...")
-	session := createSession()
-	fmt.Println("Session created!")
-	defer session.Close()
-	execRPC(session)
-}
+// func testNetconfClient() {
+// 	fmt.Println("Creating session...")
+// 	session := createSession()
+// 	fmt.Println("Session created!")
+// 	defer session.Close()
+// 	execRPC(session)
+// }
 
-func execRPC(session *netconf.Session) {
-	// gt := message.NewGet("", "")
-	// gt := message.NewGet("", "<interfaces xmlns=\"urn:ietf:params:xml:ns:yang:ietf-interfaces\"><interface><name>sw0p1</name><ethernet xmlns=\"urn:ieee:std:802.3:yang:ieee802-ethernet-interface\"><statistics><frame><in-total-frames/></frame></statistics></ethernet></interface></interfaces>")
-	gt := message.NewRPC(`<get><filter type="subtree"><interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces"><interface><name>sw0p1</name><ethernet xmlns="urn:ieee:std:802.3:yang:ieee802-ethernet-interface"><statistics><frame><in-total-frames></in-total-frames></frame></statistics></ethernet></interface></interfaces></filter></get>`)
-	fmt.Println("Message created!")
-	start := time.Now().UnixNano()
-	session.AsyncRPC(gt, defaultLogRpcReplyCallback(gt.MessageID, start))
-	time.Sleep(100 * time.Millisecond)
+// func execRPC(session *netconf.Session) {
+// 	// gt := message.NewGet("", "")
+// 	// gt := message.NewGet("", "<interfaces xmlns=\"urn:ietf:params:xml:ns:yang:ietf-interfaces\"><interface><name>sw0p1</name><ethernet xmlns=\"urn:ieee:std:802.3:yang:ieee802-ethernet-interface\"><statistics><frame><in-total-frames/></frame></statistics></ethernet></interface></interfaces>")
+// 	gt := message.NewRPC(`<get><filter type="subtree"><interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces"><interface><name>sw0p1</name><ethernet xmlns="urn:ieee:std:802.3:yang:ieee802-ethernet-interface"><statistics><frame><in-total-frames></in-total-frames></frame></statistics></ethernet></interface></interfaces></filter></get>`)
+// 	fmt.Println("Message created!")
+// 	start := time.Now().UnixNano()
+// 	session.AsyncRPC(gt, defaultLogRpcReplyCallback(gt.MessageID, start))
+// 	time.Sleep(100 * time.Millisecond)
 
-	fmt.Printf("MessageID: %v\n", gt.MessageID)
-	// fmt.Printf("delay: %v\n", time.Now().UnixNano()-start)
-	// if err != nil {
-	// 	fmt.Printf("Failed RPC: %v\n", err)
-	// } else {
-	// 	fmt.Println(reply.RawReply)
-	// }
+// 	fmt.Printf("MessageID: %v\n", gt.MessageID)
+// 	// fmt.Printf("delay: %v\n", time.Now().UnixNano()-start)
+// 	// if err != nil {
+// 	// 	fmt.Printf("Failed RPC: %v\n", err)
+// 	// } else {
+// 	// 	fmt.Println(reply.RawReply)
+// 	// }
 
-	// d2 := message.NewCloseSession()
-	// start2 := time.Now().UnixNano()
-	// session.AsyncRPC(d2, defaultLogRpcReplyCallback(d2.MessageID, start2))
+// 	// d2 := message.NewCloseSession()
+// 	// start2 := time.Now().UnixNano()
+// 	// session.AsyncRPC(d2, defaultLogRpcReplyCallback(d2.MessageID, start2))
 
-	session.Listener.WaitForMessages()
-}
+// 	session.Listener.WaitForMessages()
+// }
 
-func createSession() *netconf.Session {
-	sshConfig := &ssh.ClientConfig{
-		User:            "root",
-		Auth:            []ssh.AuthMethod{ssh.Password("")},
-		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-	}
-	s, err := netconf.DialSSH("192.168.0.1:830", sshConfig)
-	if err != nil {
-		log.Fatal(err)
-	}
+// func createSession() *netconf.Session {
+// 	sshConfig := &ssh.ClientConfig{
+// 		User:            "root",
+// 		Auth:            []ssh.AuthMethod{ssh.Password("")},
+// 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+// 	}
+// 	s, err := netconf.DialSSH("192.168.0.1:830", sshConfig)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
 
-	capabilities := netconf.DefaultCapabilities
-	err = s.SendHello(&message.Hello{Capabilities: capabilities})
-	if err != nil {
-		log.Fatal(err)
-	}
+// 	capabilities := netconf.DefaultCapabilities
+// 	err = s.SendHello(&message.Hello{Capabilities: capabilities})
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
 
-	return s
-}
+// 	return s
+// }
 
-func defaultLogRpcReplyCallback(eventId string, start int64) netconf.Callback {
-	return func(event netconf.Event) {
-		reply := event.RPCReply()
-		fmt.Printf("delay for event %v: %v\n", eventId, time.Now().UnixNano()-start)
-		if reply == nil {
-			println("Failed to execute RPC")
-		}
-		if event.EventID() == eventId {
-			println("Successfully executed RPC")
-			println(reply.RawReply)
-		}
-	}
-}
+// func defaultLogRpcReplyCallback(eventId string, start int64) netconf.Callback {
+// 	return func(event netconf.Event) {
+// 		reply := event.RPCReply()
+// 		fmt.Printf("delay for event %v: %v\n", eventId, time.Now().UnixNano()-start)
+// 		if reply == nil {
+// 			println("Failed to execute RPC")
+// 		}
+// 		if event.EventID() == eventId {
+// 			println("Successfully executed RPC")
+// 			println(reply.RawReply)
+// 		}
+// 	}
+// }
 
 func testSequences() {
 	// fmt.Println("Start batch monitoring on switch_one, switch_two, and switch_three")
