@@ -44,19 +44,19 @@ func main() {
 
 	defer s.Close()
 
-	// fmt.Println(s.ServerCapabilities)
-	// fmt.Println(s.SessionID)
+	fmt.Println(s.ServerCapabilities)
+	fmt.Println(s.SessionID)
 
-	var hello_reply *netconf.HelloMessage
-	hello_reply, err = s.Transport.ReceiveHello()
-	if err != nil {
-		fmt.Printf("Error is: %v", err)
-	}
+	// var hello_reply *netconf.HelloMessage
+	// hello_reply, err = s.Transport.ReceiveHello()
+	// if err != nil {
+	// 	fmt.Printf("Error is: %v", err)
+	// }
 
-	fmt.Printf("Hello received is: %v", hello_reply)
+	// fmt.Printf("Hello received is: %v", hello_reply)
 
-	capabilities := netconf.DefaultCapabilities
-	s.Transport.SendHello(&netconf.HelloMessage{Capabilities: capabilities})
+	// capabilities := netconf.DefaultCapabilities
+	// s.Transport.SendHello(&netconf.HelloMessage{Capabilities: capabilities})
 
 	start := time.Now().UnixNano()
 	reply, err := s.Exec(netconf.RawMethod("<get><filter type='subtree'><interfaces xmlns='urn:ietf:params:xml:ns:yang:ietf-interfaces'><interface><name>sw0p1</name><ethernet xmlns='urn:ieee:std:802.3:yang:ieee802-ethernet-interface'><statistics><frame><in-total-frames></in-total-frames></frame></statistics></ethernet></interface></interfaces></filter></get>"))
