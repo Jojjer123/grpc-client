@@ -64,7 +64,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("Reply: %+v", reply)
+	// fmt.Printf("Reply: %+v", reply)
+	fmt.Printf("Reply OK status: %v", reply.Ok)
 
 	fmt.Println("Done!")
 
