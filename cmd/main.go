@@ -50,7 +50,12 @@ func main() {
 	capabilities := netconf.DefaultCapabilities
 	s.Transport.SendHello(&netconf.HelloMessage{Capabilities: capabilities})
 
+	start := time.Now().UnixNano()
 	reply, err := s.Exec(netconf.RawMethod("<get><filter type='subtree'><interfaces xmlns='urn:ietf:params:xml:ns:yang:ietf-interfaces'><interface><name>sw0p1</name><ethernet xmlns='urn:ieee:std:802.3:yang:ieee802-ethernet-interface'><statistics><frame><in-total-frames></in-total-frames></frame></statistics></ethernet></interface></interfaces></filter></get>"))
+	end := time.Now().UnixNano()
+
+	fmt.Printf("Delay: %v", end-start)
+
 	if err != nil {
 		panic(err)
 	}
