@@ -31,12 +31,15 @@ func main() {
 	// setReq("Stop", "192.168.0.1")
 
 	sshConfig := &ssh.ClientConfig{
-		User:            "root",
-		Auth:            []ssh.AuthMethod{ssh.Password("")},
+		User:            "admin",
+		Auth:            []ssh.AuthMethod{ssh.Password("admin")},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 
-	s, err := netconf.DialSSH("192.168.0.1", sshConfig)
+	request := netconf.RawMethod("<get><filter type='subtree'><interfaces xmlns='urn:ietf:params:xml:ns:yang:ietf-interfaces'><interface><name>sw0p1</name><ethernet xmlns='urn:ieee:std:802.3:yang:ieee802-ethernet-interface'><statistics><frame><in-total-frames></in-total-frames></frame></statistics></ethernet></interface></interfaces></filter></get>")
+
+	// s, err := netconf.DialSSH("192.168.0.1", sshConfig)
+	s, err := netconf.DialSSH("172.17.0.2", sshConfig)
 
 	if err != nil {
 		log.Fatal(err)
@@ -56,7 +59,9 @@ func main() {
 	// s.Transport.SendHello(&netconf.HelloMessage{Capabilities: capabilities})
 
 	start := time.Now().UnixNano()
-	reply, err := s.Exec(netconf.RawMethod("<get><filter type='subtree'><interfaces xmlns='urn:ietf:params:xml:ns:yang:ietf-interfaces'><interface><name>sw0p1</name><ethernet xmlns='urn:ieee:std:802.3:yang:ieee802-ethernet-interface'><statistics><frame><in-total-frames></in-total-frames></frame></statistics></ethernet></interface></interfaces></filter></get>"))
+	reply, err := s.Exec(request)
+	// reply, err := s.Exec(netconf.RawMethod("<get><filter type='subtree'><interfaces xmlns='urn:ietf:params:xml:ns:yang:ietf-interfaces'><interface><name>sw0p1</name><ethernet xmlns='urn:ieee:std:802.3:yang:ieee802-ethernet-interface'><statistics><frame><in-total-frames></in-total-frames></frame></statistics></ethernet></interface></interfaces></filter></get>"))
+	// reply, err := s.Exec(netconf.RawMethod("</get>"))
 	end := time.Now().UnixNano()
 
 	fmt.Printf("Delay: %v\n", end-start)
