@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 	"strconv"
 	"time"
 
@@ -16,11 +17,54 @@ import (
 
 	types "github.com/onosproject/grpc-client/Types"
 	"golang.org/x/crypto/ssh"
+
 	// "github.com/vrgakos/go-netconf-client/netconf"
 	// "github.com/vrgakos/go-netconf-client/netconf/message"
+
+	"github.com/atomix/atomix-go-client/pkg/atomix"
+	"github.com/atomix/atomix-go-client/pkg/atomix/indexedmap"
+
+	configapi "github.com/onosproject/onos-api/go/onos/config/v2"
 )
 
 func main() {
+	fmt.Println("Start")
+
+	fmt.Println("End")
+
+	for {
+		time.Sleep(10 * time.Second)
+	}
+}
+
+func testAtomixStore() {
+	ctx := context.Background()
+	atomixClient := atomix.NewClient(atomix.WithClientID(os.Getenv("POD_NAME")))
+
+	transactions, err := atomixClient.GetIndexedMap(ctx, "onos-config-transactions")
+	if err != nil {
+		fmt.Printf("Error from atomicClient.GetIndexedMap:%+v\n", err)
+		return
+	}
+
+	entry, err := transactions.GetIndex(ctx, indexedmap.Index(0))
+	if err != nil {
+		fmt.Printf("Error getting transactions.GetIndex: %+v\n", err)
+		return
+	}
+
+	transaction := &configapi.Transaction{}
+	if err := proto.Unmarshal(entry.Value, transaction); err != nil {
+		fmt.Printf("Error unmarshaling transaction: %+v\n", err)
+	}
+	transaction.ID = configapi.TransactionID(entry.Key)
+	transaction.Index = configapi.Index(entry.Index)
+	transaction.Version = uint64(entry.Revision)
+
+	fmt.Printf("Transaction:\nID: %v\nIndex: %v\nVersion: %v\n", transaction.ID, transaction.Index, transaction.Version)
+}
+
+func testSwitchDelay() {
 	fmt.Println("Starting to test client")
 
 	// setReq("Start", "192.168.0.1", "0")
@@ -73,10 +117,6 @@ func main() {
 	fmt.Printf("Reply OK status: %v\n", reply.Ok)
 
 	fmt.Println("Done!")
-
-	for {
-		time.Sleep(10 * time.Second)
-	}
 }
 
 // func testNetconfClient() {
@@ -95,7 +135,7 @@ func main() {
 // 	start := time.Now().UnixNano()
 // 	session.AsyncRPC(gt, defaultLogRpcReplyCallback(gt.MessageID, start))
 // 	time.Sleep(100 * time.Millisecond)
-
+//
 // 	fmt.Printf("MessageID: %v\n", gt.MessageID)
 // 	// fmt.Printf("delay: %v\n", time.Now().UnixNano()-start)
 // 	// if err != nil {
@@ -103,11 +143,11 @@ func main() {
 // 	// } else {
 // 	// 	fmt.Println(reply.RawReply)
 // 	// }
-
+//
 // 	// d2 := message.NewCloseSession()
 // 	// start2 := time.Now().UnixNano()
 // 	// session.AsyncRPC(d2, defaultLogRpcReplyCallback(d2.MessageID, start2))
-
+//
 // 	session.Listener.WaitForMessages()
 // }
 
@@ -121,13 +161,13 @@ func main() {
 // 	if err != nil {
 // 		log.Fatal(err)
 // 	}
-
+//
 // 	capabilities := netconf.DefaultCapabilities
 // 	err = s.SendHello(&message.Hello{Capabilities: capabilities})
 // 	if err != nil {
 // 		log.Fatal(err)
 // 	}
-
+//
 // 	return s
 // }
 
