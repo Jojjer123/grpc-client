@@ -30,6 +30,8 @@ import (
 func main() {
 	fmt.Println("Start")
 
+	testAtomixStore()
+
 	fmt.Println("End")
 
 	for {
@@ -750,8 +752,6 @@ func setReq(action string, target string, confIndex ...string) {
 		fmt.Print("Target returned RPC error for Set: ")
 		fmt.Println(err)
 	}
-
-	// fmt.Println("Client connected successfully")
 }
 
 func setUpdate(config types.ConfigRequest) {
