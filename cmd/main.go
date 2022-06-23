@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"os"
 	"strconv"
 	"time"
 
@@ -22,9 +21,6 @@ import (
 	// "github.com/vrgakos/go-netconf-client/netconf/message"
 
 	"github.com/atomix/atomix-go-client/pkg/atomix"
-	"github.com/atomix/atomix-go-client/pkg/atomix/indexedmap"
-
-	configapi "github.com/onosproject/onos-api/go/onos/config/v2"
 )
 
 func main() {
@@ -41,29 +37,37 @@ func main() {
 
 func testAtomixStore() {
 	ctx := context.Background()
-	atomixClient := atomix.NewClient(atomix.WithClientID(os.Getenv("POD_NAME")))
 
-	transactions, err := atomixClient.GetIndexedMap(ctx, "onos-config-transactions")
+	fmt.Println("Creating client")
+	atomixClient := atomix.NewClient(atomix.WithClientID("grpc-client"))
+
+	fmt.Println("Getting indexed map")
+
+	myCounter, err := atomixClient.GetCounter(ctx, "my-counter")
 	if err != nil {
 		fmt.Printf("Error from atomicClient.GetIndexedMap:%+v\n", err)
 		return
 	}
 
-	entry, err := transactions.GetIndex(ctx, indexedmap.Index(0))
+	fmt.Println("Incrementing value of myCounter")
+
+	newVal, err := myCounter.Increment(ctx, 1)
 	if err != nil {
-		fmt.Printf("Error getting transactions.GetIndex: %+v\n", err)
+		fmt.Printf("Error using myCounter.Increment: %+v\n", err)
 		return
 	}
 
-	transaction := &configapi.Transaction{}
-	if err := proto.Unmarshal(entry.Value, transaction); err != nil {
-		fmt.Printf("Error unmarshaling transaction: %+v\n", err)
-	}
-	transaction.ID = configapi.TransactionID(entry.Key)
-	transaction.Index = configapi.Index(entry.Index)
-	transaction.Version = uint64(entry.Revision)
+	fmt.Printf("Counter value is: %v\n", newVal)
 
-	fmt.Printf("Transaction:\nID: %v\nIndex: %v\nVersion: %v\n", transaction.ID, transaction.Index, transaction.Version)
+	// transaction := &configapi.Transaction{}
+	// if err := proto.Unmarshal(entry.Value, transaction); err != nil {
+	// 	fmt.Printf("Error unmarshaling transaction: %+v\n", err)
+	// }
+	// transaction.ID = configapi.TransactionID(entry.Key)
+	// transaction.Index = configapi.Index(entry.Index)
+	// transaction.Version = uint64(entry.Revision)
+
+	// fmt.Printf("Transaction:\nID: %v\nIndex: %v\nVersion: %v\n", transaction.ID, transaction.Index, transaction.Version)
 }
 
 func testSwitchDelay() {
