@@ -18,8 +18,6 @@ import (
 
 	types "github.com/onosproject/grpc-client/Types"
 	"golang.org/x/crypto/ssh"
-	// "github.com/vrgakos/go-netconf-client/netconf"
-	// "github.com/vrgakos/go-netconf-client/netconf/message"
 )
 
 func main() {
@@ -44,23 +42,10 @@ func testAtomixStore() {
 
 	myMap, err := atomixClient.GetMap(ctx, "monitor-config")
 
-	// myMap, err := atomix.GetMap(ctx, "onos-config-snapshots")
-
 	if err != nil {
 		fmt.Printf("Error from atomixClient.GetMap:%+v\n", err)
-		// fmt.Printf("Error from atomix.GetMap: %v\n", err)
 		return
 	}
-
-	// fmt.Println("Getting len of myMap")
-
-	// myMapLength, err := myMap.Len(ctx)
-	// if err != nil {
-	// 	fmt.Printf("Error getting length of myMap: %v\n", err)
-	// 	return
-	// }
-
-	// fmt.Printf("Length of myMap: %v\n", myMapLength)
 
 	fmt.Println("Pushing value to myMap")
 
