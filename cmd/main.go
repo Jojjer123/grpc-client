@@ -5,10 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 	"strconv"
 	"time"
 
 	"github.com/Juniper/go-netconf/netconf"
+	"github.com/atomix/atomix-go-client/pkg/atomix"
 	"github.com/golang/protobuf/proto"
 	"github.com/openconfig/gnmi/client"
 	gclient "github.com/openconfig/gnmi/client/gnmi"
@@ -16,11 +18,8 @@ import (
 
 	types "github.com/onosproject/grpc-client/Types"
 	"golang.org/x/crypto/ssh"
-
 	// "github.com/vrgakos/go-netconf-client/netconf"
 	// "github.com/vrgakos/go-netconf-client/netconf/message"
-
-	"github.com/atomix/atomix-go-client/pkg/atomix"
 )
 
 func main() {
@@ -39,35 +38,41 @@ func testAtomixStore() {
 	ctx := context.Background()
 
 	fmt.Println("Creating client")
-	atomixClient := atomix.NewClient(atomix.WithClientID("grpc-client"))
+	atomixClient := atomix.NewClient(atomix.WithClientID(os.Getenv("POD_NAME")))
 
-	fmt.Println("Getting indexed map")
+	fmt.Println("Getting map")
 
-	myCounter, err := atomixClient.GetCounter(ctx, "my-counter")
+	myMap, err := atomixClient.GetMap(ctx, "monitor-config")
+
+	// myMap, err := atomix.GetMap(ctx, "onos-config-snapshots")
+
 	if err != nil {
-		fmt.Printf("Error from atomicClient.GetIndexedMap:%+v\n", err)
+		fmt.Printf("Error from atomixClient.GetMap:%+v\n", err)
+		// fmt.Printf("Error from atomix.GetMap: %v\n", err)
 		return
 	}
 
-	fmt.Println("Incrementing value of myCounter")
+	// fmt.Println("Getting len of myMap")
 
-	newVal, err := myCounter.Increment(ctx, 1)
-	if err != nil {
-		fmt.Printf("Error using myCounter.Increment: %+v\n", err)
-		return
-	}
-
-	fmt.Printf("Counter value is: %v\n", newVal)
-
-	// transaction := &configapi.Transaction{}
-	// if err := proto.Unmarshal(entry.Value, transaction); err != nil {
-	// 	fmt.Printf("Error unmarshaling transaction: %+v\n", err)
+	// myMapLength, err := myMap.Len(ctx)
+	// if err != nil {
+	// 	fmt.Printf("Error getting length of myMap: %v\n", err)
+	// 	return
 	// }
-	// transaction.ID = configapi.TransactionID(entry.Key)
-	// transaction.Index = configapi.Index(entry.Index)
-	// transaction.Version = uint64(entry.Revision)
 
-	// fmt.Printf("Transaction:\nID: %v\nIndex: %v\nVersion: %v\n", transaction.ID, transaction.Index, transaction.Version)
+	// fmt.Printf("Length of myMap: %v\n", myMapLength)
+
+	fmt.Println("Pushing value to myMap")
+
+	newVal, err := myMap.Put(ctx, "Test", []byte("This works now"))
+	if err != nil {
+		fmt.Printf("Error pushing new entry to myMap: %v\n", err)
+		return
+	}
+
+	fmt.Printf("myMap now contains entry: %v\n", newVal)
+
+	myMap.Close(ctx)
 }
 
 func testSwitchDelay() {
