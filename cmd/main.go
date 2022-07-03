@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"encoding/xml"
 	"fmt"
 	"log"
 	"os"
@@ -61,15 +62,13 @@ func testAtomixStore() {
 }
 
 func testSwitchDelay() {
-	fmt.Println("Starting to test client")
-
 	sshConfig := &ssh.ClientConfig{
 		User:            "root",
 		Auth:            []ssh.AuthMethod{ssh.Password("")},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 
-	request := netconf.RawMethod("<get><filter type='subtree'><interfaces xmlns='urn:ietf:params:xml:ns:yang:ietf-interfaces'><interface><name>sw0p1</name><ethernet xmlns='urn:ieee:std:802.3:yang:ieee802-ethernet-interface'><statistics><frame><in-total-frames></in-total-frames></frame></statistics></ethernet></interface></interfaces></filter></get>")
+	// request := netconf.RawMethod("<get><filter type='subtree'><interfaces xmlns='urn:ietf:params:xml:ns:yang:ietf-interfaces'><interface><name>sw0p1</name><ethernet xmlns='urn:ieee:std:802.3:yang:ieee802-ethernet-interface'><statistics><frame><in-total-frames></in-total-frames></frame></statistics></ethernet></interface></interfaces></filter></get>")
 
 	s, err := netconf.DialSSH("192.168.0.1", sshConfig)
 	if err != nil {
@@ -81,17 +80,31 @@ func testSwitchDelay() {
 	fmt.Println(s.ServerCapabilities)
 	fmt.Println(s.SessionID)
 
-	start := time.Now().UnixNano()
-	reply, err := s.Exec(request)
-	end := time.Now().UnixNano()
+	hello := &netconf.HelloMessage{Capabilities: netconf.DefaultCapabilities}
 
-	fmt.Printf("Delay: %v\n", end-start)
-
+	val, err := xml.Marshal(hello)
 	if err != nil {
-		panic(err)
+		fmt.Printf("Failed to marshal hello message: %v\n", err)
 	}
 
-	fmt.Printf("Reply OK status: %v\n", reply.Ok)
+	header := []byte(xml.Header)
+	val = append(header, val...)
+
+	var req string
+	xml.Unmarshal(val, &req)
+
+	fmt.Println(req)
+
+	// start := time.Now().UnixNano()
+	// _, err = s.Exec(request)
+	// end := time.Now().UnixNano()
+
+	// fmt.Printf("Delay: %v\n", end-start)
+
+	// if err != nil {
+	// 	panic(err)
+	// }
+
 	fmt.Println("Done!")
 }
 
