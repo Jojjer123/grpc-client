@@ -77,8 +77,8 @@ func testSwitchDelay() {
 
 	defer s.Close()
 
-	fmt.Println(s.ServerCapabilities)
-	fmt.Println(s.SessionID)
+	// fmt.Println(s.ServerCapabilities)
+	// fmt.Println(s.SessionID)
 
 	hello := &netconf.HelloMessage{Capabilities: netconf.DefaultCapabilities}
 
