@@ -23,7 +23,7 @@ import (
 func main() {
 	fmt.Println("Start")
 
-	testAtomixStore()
+	testSwitchDelay()
 
 	fmt.Println("End")
 
@@ -63,13 +63,6 @@ func testAtomixStore() {
 func testSwitchDelay() {
 	fmt.Println("Starting to test client")
 
-	// setReq("Start", "192.168.0.1", "0")
-	// time.Sleep(30 * time.Second)
-
-	// // setReq("Update", "192.168.0.1", "1")
-
-	// setReq("Stop", "192.168.0.1")
-
 	sshConfig := &ssh.ClientConfig{
 		User:            "root",
 		Auth:            []ssh.AuthMethod{ssh.Password("")},
@@ -79,29 +72,17 @@ func testSwitchDelay() {
 	request := netconf.RawMethod("<get><filter type='subtree'><interfaces xmlns='urn:ietf:params:xml:ns:yang:ietf-interfaces'><interface><name>sw0p1</name><ethernet xmlns='urn:ieee:std:802.3:yang:ieee802-ethernet-interface'><statistics><frame><in-total-frames></in-total-frames></frame></statistics></ethernet></interface></interfaces></filter></get>")
 
 	s, err := netconf.DialSSH("192.168.0.1", sshConfig)
-	// s, err := netconf.DialSSH("172.17.0.2", sshConfig)
-
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	defer s.Close()
 
-	// var hello_reply *netconf.HelloMessage
-	// hello_reply, err = s.Transport.ReceiveHello()
-	// if err != nil {
-	// 	fmt.Printf("Error is: %v", err)
-	// }
-
-	// fmt.Printf("Hello received is: %v", hello_reply)
-
-	// capabilities := netconf.DefaultCapabilities
-	// s.Transport.SendHello(&netconf.HelloMessage{Capabilities: capabilities})
+	fmt.Println(s.ServerCapabilities)
+	fmt.Println(s.SessionID)
 
 	start := time.Now().UnixNano()
 	reply, err := s.Exec(request)
-	// reply, err := s.Exec(netconf.RawMethod("<get><filter type='subtree'><interfaces xmlns='urn:ietf:params:xml:ns:yang:ietf-interfaces'><interface><name>sw0p1</name><ethernet xmlns='urn:ieee:std:802.3:yang:ieee802-ethernet-interface'><statistics><frame><in-total-frames></in-total-frames></frame></statistics></ethernet></interface></interfaces></filter></get>"))
-	// reply, err := s.Exec(netconf.RawMethod("</get>"))
 	end := time.Now().UnixNano()
 
 	fmt.Printf("Delay: %v\n", end-start)
@@ -109,9 +90,8 @@ func testSwitchDelay() {
 	if err != nil {
 		panic(err)
 	}
-	// fmt.Printf("Reply: %+v", reply)
-	fmt.Printf("Reply OK status: %v\n", reply.Ok)
 
+	fmt.Printf("Reply OK status: %v\n", reply.Ok)
 	fmt.Println("Done!")
 }
 
