@@ -91,7 +91,10 @@ func testSwitchDelay() {
 	val = append(header, val...)
 
 	var req string
-	xml.Unmarshal(val, &req)
+	err = xml.Unmarshal(val, &req)
+	if err != nil {
+		fmt.Printf("Failed to unmarshal value: %v\n", err)
+	}
 
 	fmt.Println(req)
 
