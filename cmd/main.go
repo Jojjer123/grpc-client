@@ -90,6 +90,8 @@ func testSwitchDelay() {
 	header := []byte(xml.Header)
 	val = append(header, val...)
 
+	fmt.Println(val)
+
 	var req string
 	err = xml.Unmarshal(val, &req)
 	if err != nil {
