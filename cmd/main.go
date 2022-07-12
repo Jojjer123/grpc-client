@@ -24,7 +24,9 @@ import (
 func main() {
 	fmt.Println("Start")
 
-	testSwitchDelay()
+	setReq("Start", "192.168.0.1", "0")
+	time.Sleep(1 * time.Minute)
+	setReq("Stop", "192.168.0.1")
 
 	fmt.Println("End")
 
@@ -68,7 +70,7 @@ func testSwitchDelay() {
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 
-	// request := netconf.RawMethod("<get><filter type='subtree'><interfaces xmlns='urn:ietf:params:xml:ns:yang:ietf-interfaces'><interface><name>sw0p1</name><ethernet xmlns='urn:ieee:std:802.3:yang:ieee802-ethernet-interface'><statistics><frame><in-total-frames></in-total-frames></frame></statistics></ethernet></interface></interfaces></filter></get>")
+	// request := netconf.RawMethod("<get xmlns='urn:ietf:params:xml:ns:netconf:base:1.0'><filter type='subtree'><interfaces xmlns='urn:ietf:params:xml:ns:yang:ietf-interfaces'><interface><name>sw0p1</name><ethernet xmlns='urn:ieee:std:802.3:yang:ieee802-ethernet-interface'><statistics><frame><in-total-frames></in-total-frames></frame></statistics></ethernet></interface></interfaces></filter></get>")
 
 	s, err := netconf.DialSSH("192.168.0.1", sshConfig)
 	if err != nil {
