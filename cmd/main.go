@@ -16,23 +16,149 @@ import (
 	"github.com/openconfig/gnmi/client"
 	gclient "github.com/openconfig/gnmi/client/gnmi"
 	pb "github.com/openconfig/gnmi/proto/gnmi"
+	"github.com/openconfig/gnmi/proto/gnmi_ext"
 
 	types "github.com/onosproject/grpc-client/Types"
 	"golang.org/x/crypto/ssh"
 )
 
 func main() {
-	fmt.Println("Start")
+	// fmt.Println("Start")
 
-	setReq("Start", "192.168.0.1", "0")
-	time.Sleep(1 * time.Minute)
-	setReq("Stop", "192.168.0.1")
+	testNetworkChangeRequest()
 
-	fmt.Println("End")
+	// fmt.Println("End")
 
 	for {
 		time.Sleep(10 * time.Second)
 	}
+}
+
+func testNetworkChangeRequest() {
+	ctx := context.Background()
+
+	address := []string{"gnmi-netconf-adapter:11161"}
+
+	c, err := gclient.New(ctx, client.Destination{
+		Addrs:       address,
+		Timeout:     time.Second * 5,
+		Credentials: nil,
+		TLS:         nil,
+	})
+
+	if err != nil {
+		fmt.Print("Could not create a gNMI client: ")
+		fmt.Println(err)
+	}
+
+	// myMap := map[string]string{}
+	// myMap["Hello"] = "World!"
+
+	setRequest := pb.SetRequest{
+		Update: []*pb.Update{
+			{
+				Path: &pb.Path{
+					Target: "192.168.0.1",
+					Elem: []*pb.PathElem{
+						{
+							Name: "interfaces",
+							Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
+						},
+						{
+							Name: "interface",
+							Key:  map[string]string{"name": "sw0p1"},
+						},
+						{
+							Name: "max-sdu-table",
+							Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched", "traffic-class": "0"},
+						},
+						{
+							Name: "queue-max-sdu",
+						},
+					}, // Path to an element that should be updated
+				},
+				Val: &pb.TypedValue{
+					Value: &pb.TypedValue_StringVal{
+						StringVal: "1503",
+					},
+				},
+			},
+			{
+				Path: &pb.Path{
+					Target: "192.168.0.1",
+					Elem: []*pb.PathElem{
+						{
+							Name: "interfaces",
+							Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
+						},
+						{
+							Name: "interface",
+							Key:  map[string]string{"name": "sw0p1"},
+						},
+						{
+							Name: "max-sdu-table",
+							Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched", "traffic-class": "1"},
+						},
+						{
+							Name: "queue-max-sdu",
+						},
+					}, // Path to an element that should be updated
+				},
+				Val: &pb.TypedValue{
+					Value: &pb.TypedValue_StringVal{
+						StringVal: "1505",
+					},
+				},
+			},
+			// {
+			// 	Path: &pb.Path{
+			// 		Target: "192.168.0.2",
+			// 	},
+			// },
+			// {
+			// 	Path: &pb.Path{
+			// 		Target: "192.168.0.2",
+			// 	},
+			// },
+		},
+		Extension: []*gnmi_ext.Extension{
+			{
+				Ext: &gnmi_ext.Extension_RegisteredExt{
+					RegisteredExt: &gnmi_ext.RegisteredExtension{
+						Id:  gnmi_ext.ExtensionID(100),
+						Msg: []byte("my_network_change"),
+					},
+				},
+			},
+			{
+				Ext: &gnmi_ext.Extension_RegisteredExt{
+					RegisteredExt: &gnmi_ext.RegisteredExtension{
+						Id:  gnmi_ext.ExtensionID(101),
+						Msg: []byte("1.0.2"),
+					},
+				},
+			},
+			{
+				Ext: &gnmi_ext.Extension_RegisteredExt{
+					RegisteredExt: &gnmi_ext.RegisteredExtension{
+						Id:  gnmi_ext.ExtensionID(102),
+						Msg: []byte("tsn-model"),
+					},
+				},
+			},
+		},
+	}
+
+	response, err := c.(*gclient.Client).Set(ctx, &setRequest)
+	if err != nil {
+		fmt.Print("Target returned RPC error for Set: ")
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Print("Response from gnmi-netconf-adapter is: ")
+	fmt.Println(response)
+
 }
 
 func testAtomixStore() {
