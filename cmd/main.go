@@ -25,7 +25,7 @@ import (
 func main() {
 	// fmt.Println("Start")
 
-	testNetworkChangeRequest()
+	getFullConfig()
 
 	// fmt.Println("End")
 
@@ -411,7 +411,7 @@ func getFullConfig() {
 	getRequest := pb.GetRequest{
 		Path: []*pb.Path{
 			{
-				Target: "192.168.0.2",
+				Target: "192.168.0.1",
 			},
 		},
 		Type: pb.GetRequest_STATE,
