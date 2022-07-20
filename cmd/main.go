@@ -25,13 +25,36 @@ import (
 func main() {
 	// fmt.Println("Start")
 
-	getFullConfig()
+	getFullConfigFromSwitch("192.168.0.1")
 
 	// fmt.Println("End")
 
 	for {
 		time.Sleep(10 * time.Second)
 	}
+}
+
+func getFullConfigFromSwitch(addr string) {
+	sshConfig := &ssh.ClientConfig{
+		User:            "root",
+		Auth:            []ssh.AuthMethod{ssh.Password("")},
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+	}
+
+	s, err := netconf.DialSSH(addr, sshConfig)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer s.Close()
+
+	reply, err := s.Exec(netconf.MethodGetConfig("running"))
+	if err != nil {
+		fmt.Printf("Failed getting config: %v", err)
+		return
+	}
+
+	fmt.Println(reply.Data)
 }
 
 func testNetworkChangeRequest() {
@@ -158,7 +181,6 @@ func testNetworkChangeRequest() {
 
 	fmt.Print("Response from gnmi-netconf-adapter is: ")
 	fmt.Println(response)
-
 }
 
 func testAtomixStore() {
