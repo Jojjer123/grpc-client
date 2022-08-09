@@ -25,7 +25,15 @@ import (
 func main() {
 	// fmt.Println("Start")
 
-	getFullConfigFromSwitch("192.168.0.1")
+	// getFullConfigFromSwitch("192.168.0.1")
+
+	setReq("Start", "192.168.0.1", "0")
+
+	time.Sleep(55 * time.Second)
+
+	setReq("Stop", "192.168.0.1")
+
+	// testNetworkChangeRequest()
 
 	// fmt.Println("End")
 
