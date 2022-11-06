@@ -20,6 +20,8 @@ import (
 
 	types "github.com/onosproject/grpc-client/Types"
 	"golang.org/x/crypto/ssh"
+
+	adapterResp "github.com/onosproject/grpc-client/adapterResponse"
 )
 
 func main() {
@@ -29,7 +31,7 @@ func main() {
 
 	resp := getFullConfig("192.168.0.2")
 
-	var adapterResponse AdapterResponse
+	var adapterResponse adapterResp.AdapterResponse
 
 	if err := proto.Unmarshal(resp.Notification[0].Update[0].Val.GetProtoBytes(), &adapterResponse); err != nil {
 		fmt.Printf("Failed to unmarshal ProtoBytes: %v", err)
@@ -54,11 +56,7 @@ func main() {
 	}
 }
 
-func (m *AdapterResponse) Reset()         { *m = AdapterResponse{} }
-func (m *AdapterResponse) String() string { return proto.CompactTextString(m) }
-func (m *AdapterResponse) ProtoMessage()  {}
-
-func getNewTreeStructure(schemaEntries []SchemaEntry) *SchemaTree {
+func getNewTreeStructure(schemaEntries []*adapterResp.SchemaEntry) *SchemaTree {
 	var newTree *SchemaTree
 	tree := &SchemaTree{}
 	lastNode := ""
@@ -93,11 +91,6 @@ func getNewTreeStructure(schemaEntries []SchemaEntry) *SchemaTree {
 		}
 	}
 	return tree
-}
-
-type AdapterResponse struct {
-	Entries   []SchemaEntry `protobuf:"bytes,1,opt,name=Entries"`
-	Timestamp int64         `protobuf:"fixed64,2,opt,name=Timestamp"`
 }
 
 func printTree(tree *SchemaTree, tabLevels int) {
