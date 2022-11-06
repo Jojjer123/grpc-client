@@ -27,7 +27,7 @@ func main() {
 
 	// getFullConfigFromSwitch("192.168.0.1")
 
-	setReq("Start", "192.168.0.2", "0")
+	setReq("Start", "192.168.0.2", "2")
 
 	time.Sleep(55 * time.Second)
 
