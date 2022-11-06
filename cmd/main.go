@@ -25,13 +25,25 @@ import (
 func main() {
 	// fmt.Println("Start")
 
-	// getFullConfigFromSwitch("192.168.0.1")
+	// getFullConfigFromSwitch("192.168.0.2")
 
-	setReq("Start", "192.168.0.2", "2")
+	resp := getFullConfig("192.168.0.2")
 
-	time.Sleep(55 * time.Second)
+	var adapterResponse AdapterResponse
 
-	setReq("Stop", "192.168.0.2")
+	if err := proto.Unmarshal(resp.Notification[0].Update[0].Val.GetProtoBytes(), &adapterResponse); err != nil {
+		fmt.Printf("Failed to unmarshal ProtoBytes: %v", err)
+	}
+
+	schemaTree := getNewTreeStructure(adapterResponse.Entries)
+
+	printTree(schemaTree, 0)
+
+	// setReq("Start", "192.168.0.2", "0")
+
+	// time.Sleep(55 * time.Second)
+
+	// setReq("Stop", "192.168.0.2")
 
 	// testNetworkChangeRequest()
 
@@ -39,6 +51,64 @@ func main() {
 
 	for {
 		time.Sleep(10 * time.Second)
+	}
+}
+
+func (m *AdapterResponse) Reset()         { *m = AdapterResponse{} }
+func (m *AdapterResponse) String() string { return proto.CompactTextString(m) }
+func (m *AdapterResponse) ProtoMessage()  {}
+
+func getNewTreeStructure(schemaEntries []SchemaEntry) *SchemaTree {
+	var newTree *SchemaTree
+	tree := &SchemaTree{}
+	lastNode := ""
+	for _, entry := range schemaEntries {
+		if entry.Value == "" {
+			// In a directory
+			if entry.Tag == "end" {
+				if entry.Name != "data" {
+					if lastNode != "leaf" {
+						tree = tree.Parent
+					}
+					lastNode = ""
+				}
+			} else {
+				newTree = &SchemaTree{Parent: tree}
+
+				newTree.Name = entry.Name
+				newTree.Namespace = entry.Namespace
+				newTree.Parent.Children = append(newTree.Parent.Children, newTree)
+
+				tree = newTree
+			}
+		} else {
+			// In a leaf
+			newTree = &SchemaTree{Parent: tree}
+
+			newTree.Name = entry.Name
+			newTree.Value = entry.Value
+			newTree.Parent.Children = append(newTree.Parent.Children, newTree)
+
+			lastNode = "leaf"
+		}
+	}
+	return tree
+}
+
+type AdapterResponse struct {
+	Entries   []SchemaEntry `protobuf:"bytes,1,opt,name=Entries"`
+	Timestamp int64         `protobuf:"fixed64,2,opt,name=Timestamp"`
+}
+
+func printTree(tree *SchemaTree, tabLevels int) {
+	tabs := ""
+	for i := 0; i < tabLevels; i++ {
+		tabs += "  "
+	}
+
+	fmt.Println(tabs + tree.Name + "---" + tree.Namespace + "---" + tree.Value)
+	for _, child := range tree.Children {
+		printTree(child, tabLevels+1)
 	}
 }
 
@@ -419,7 +489,7 @@ func testSequences() {
 	setReq("Stop", "192.168.0.1")
 }
 
-func getFullConfig() {
+func getFullConfig(switchAddr string) *pb.GetResponse {
 	ctx := context.Background()
 
 	address := []string{"gnmi-netconf-adapter:11161"}
@@ -441,7 +511,7 @@ func getFullConfig() {
 	getRequest := pb.GetRequest{
 		Path: []*pb.Path{
 			{
-				Target: "192.168.0.1",
+				Target: switchAddr,
 			},
 		},
 		Type: pb.GetRequest_STATE,
@@ -455,7 +525,9 @@ func getFullConfig() {
 
 	c.Close()
 
-	fmt.Println(response)
+	// fmt.Println(response)
+
+	return response
 }
 
 func testing() {
