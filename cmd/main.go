@@ -29,23 +29,25 @@ func main() {
 
 	// getFullConfigFromSwitch("192.168.0.2")
 
-	resp := getFullConfig("192.168.0.2")
+	// resp := getFullConfig("192.168.0.2")
 
-	var adapterResponse adapterResp.AdapterResponse
+	// var adapterResponse adapterResp.AdapterResponse
 
-	if err := proto.Unmarshal(resp.Notification[0].Update[0].Val.GetProtoBytes(), &adapterResponse); err != nil {
-		fmt.Printf("Failed to unmarshal ProtoBytes: %v", err)
-	}
+	// if err := proto.Unmarshal(resp.Notification[0].Update[0].Val.GetProtoBytes(), &adapterResponse); err != nil {
+	// 	fmt.Printf("Failed to unmarshal ProtoBytes: %v", err)
+	// }
 
-	schemaTree := getNewTreeStructure(adapterResponse.Entries)
+	// schemaTree := getNewTreeStructure(adapterResponse.Entries)
 
-	printTree(schemaTree, 0)
+	// printTree(schemaTree, 0)
 
-	// setReq("Start", "192.168.0.2", "0")
+	// testApplyingConfig("192.168.0.2")
 
-	// time.Sleep(55 * time.Second)
+	setReq("Start", "192.168.0.2", "0")
 
-	// setReq("Stop", "192.168.0.2")
+	time.Sleep(55 * time.Second)
+
+	setReq("Stop", "192.168.0.2")
 
 	// testNetworkChangeRequest()
 
@@ -55,6 +57,39 @@ func main() {
 		time.Sleep(10 * time.Second)
 	}
 }
+
+// func testApplyingConfig(switchAddr string) {
+// 	ctx := context.Background()
+
+// 	address := []string{"gnmi-netconf-adapter:11161"}
+
+// 	c, err := gclient.New(ctx, client.Destination{
+// 		Addrs:       address,
+// 		Timeout:     time.Second * 5,
+// 		Credentials: nil,
+// 		TLS:         nil,
+// 	})
+
+// 	if err != nil {
+// 		fmt.Print("Could not create a gNMI client: ")
+// 		fmt.Println(err)
+// 	}
+
+// 	setRequest := pb.SetRequest{
+// 		Update: []*pb.Update{
+// 			{
+
+// 			},
+// 		},
+// 	}
+
+// 	response, err := c.(*gclient.Client).Set(ctx, &setRequest)
+// 	if err != nil {
+// 		fmt.Print("Target returned RPC error for Set: ")
+// 		fmt.Println(err)
+// 		return
+// 	}
+// }
 
 func getNewTreeStructure(schemaEntries []*adapterResp.SchemaEntry) *SchemaTree {
 	var newTree *SchemaTree
@@ -128,7 +163,7 @@ func getFullConfigFromSwitch(addr string) {
 	fmt.Println(reply.Data)
 }
 
-func testNetworkChangeRequest() {
+func testNetworkChangeRequest(switchAddr string) {
 	ctx := context.Background()
 
 	address := []string{"gnmi-netconf-adapter:11161"}
@@ -152,7 +187,7 @@ func testNetworkChangeRequest() {
 		Update: []*pb.Update{
 			{
 				Path: &pb.Path{
-					Target: "192.168.0.1",
+					Target: switchAddr,
 					Elem: []*pb.PathElem{
 						{
 							Name: "interfaces",
