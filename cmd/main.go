@@ -178,10 +178,6 @@ func testApplyingConfig() {
 						},
 						{
 							Name: "admin-control-list",
-							Key:  map[string]string{},
-						},
-						{
-							Name: "gate-control-entry",
 							Key:  map[string]string{"index": fmt.Sprint(0)},
 						},
 						{
@@ -214,10 +210,6 @@ func testApplyingConfig() {
 						},
 						{
 							Name: "admin-control-list",
-							Key:  map[string]string{},
-						},
-						{
-							Name: "gate-control-entry",
 							Key:  map[string]string{"index": fmt.Sprint(0)},
 						},
 						{
@@ -254,10 +246,6 @@ func testApplyingConfig() {
 						},
 						{
 							Name: "admin-control-list",
-							Key:  map[string]string{},
-						},
-						{
-							Name: "gate-control-entry",
 							Key:  map[string]string{"index": fmt.Sprint(0)},
 						},
 						{
@@ -294,10 +282,6 @@ func testApplyingConfig() {
 						},
 						{
 							Name: "admin-control-list",
-							Key:  map[string]string{},
-						},
-						{
-							Name: "gate-control-entry",
 							Key:  map[string]string{"index": fmt.Sprint(1)},
 						},
 						{
@@ -330,10 +314,6 @@ func testApplyingConfig() {
 						},
 						{
 							Name: "admin-control-list",
-							Key:  map[string]string{},
-						},
-						{
-							Name: "gate-control-entry",
 							Key:  map[string]string{"index": fmt.Sprint(1)},
 						},
 						{
@@ -370,10 +350,6 @@ func testApplyingConfig() {
 						},
 						{
 							Name: "admin-control-list",
-							Key:  map[string]string{},
-						},
-						{
-							Name: "gate-control-entry",
 							Key:  map[string]string{"index": fmt.Sprint(1)},
 						},
 						{
