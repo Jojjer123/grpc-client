@@ -76,7 +76,7 @@ func testApplyingConfig() {
 	}
 
 	setRequest := pb.SetRequest{
-		Update: []*pb.Update{
+		Replace: []*pb.Update{
 			{
 				Path: &pb.Path{
 					Elem: []*pb.PathElem{
