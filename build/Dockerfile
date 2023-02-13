@@ -10,7 +10,7 @@ COPY . $ONOS_GRPC_CLIENT_ROOT
 RUN cd $ONOS_GRPC_CLIENT_ROOT && GO111MODULE=on go build -o /go/bin/main ./cmd/
 
 
-FROM alpine:3.11
+FROM alpine:3.16
 RUN apk add bash
 ENV HOME=/home/grpc-client
 RUN mkdir $HOME

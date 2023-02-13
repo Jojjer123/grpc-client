@@ -1,0 +1,137 @@
+package modelplugin
+
+import (
+	"fmt"
+
+	"github.com/openconfig/gnmi/proto/gnmi"
+	"github.com/openconfig/goyang/pkg/yang"
+	"github.com/openconfig/ygot/ygot"
+)
+
+// ModelPlugin is a config model
+type ModelPlugin struct {
+	Info           ModelInfo
+	Model          ConfigModel
+	ReadOnlyPaths  ReadOnlyPathMap  `json:"readOnlyPathMap"`
+	ReadWritePaths ReadWritePathMap `json:"readWritePathMap"`
+}
+
+// Name is a config model name
+type Name string
+
+// Version is a config model version
+type Version string
+
+// Revision is a config module revision
+type Revision string
+
+// GetStateMode defines the Getstate handling
+type GetStateMode string
+
+const (
+	// GetStateNone - device type does not support Operational State at all
+	GetStateNone GetStateMode = "GetStateNone"
+	// GetStateOpState - device returns all its op state attributes by querying
+	// GetRequest_STATE and GetRequest_OPERATIONAL
+	GetStateOpState GetStateMode = "GetStateOpState"
+	// GetStateExplicitRoPaths - device returns all its op state attributes by querying
+	// exactly what the ReadOnly paths from YANG - wildcards are handled by device
+	GetStateExplicitRoPaths GetStateMode = "GetStateExplicitRoPaths"
+	// GetStateExplicitRoPathsExpandWildcards - where there are wildcards in the
+	// ReadOnly paths 2 calls have to be made - 1) to expand the wildcards in to
+	// real paths (since the device doesn't do it) and 2) to query those expanded
+	// wildcard paths - this is the Stratum 1.0.0 method
+	GetStateExplicitRoPathsExpandWildcards GetStateMode = "GetStateExplicitRoPathsExpandWildcards"
+)
+
+func (m ModelInfo) String() string {
+	return fmt.Sprintf("%s@%s", m.Name, m.Version)
+}
+
+// ModuleInfo is a config module info
+type ModuleInfo struct {
+	Name         Name     `json:"name"`
+	File         string   `json:"file"`
+	Organization string   `json:"organization"`
+	Revision     Revision `json:"revision"`
+}
+
+// FileInfo is a config file info
+type FileInfo struct {
+	Path string `json:"path"`
+	Data []byte `json:"data"`
+}
+
+// PluginInfo is config model plugin info
+type PluginInfo struct {
+	Name    Name    `json:"name"`
+	Version Version `json:"version"`
+}
+
+// ConfigModel is a configuration model data
+type ConfigModel interface {
+	// Info returns the config model info
+	Info() ModelInfo
+
+	// Data returns the config model data
+	Data() []*gnmi.ModelData
+
+	// Schema returns the config model schema
+	Schema() (map[string]*yang.Entry, error)
+
+	// GetStateMode returns the get state mode
+	GetStateMode() GetStateMode
+
+	// Unmarshaler returns the config model unmarshaler function
+	Unmarshaler() Unmarshaler
+
+	// Validator returns the config model validator function
+	Validator() Validator
+}
+
+// Unmarshaler is a config model unmarshaler function
+type Unmarshaler func([]byte) (*ygot.ValidatedGoStruct, error)
+
+// Validator is a config model validator function
+type Validator func(model *ygot.ValidatedGoStruct, opts ...ygot.ValidationOption) error
+
+// ModelInfo is config model info
+type ModelInfo struct {
+	Name         Name         `json:"name"`
+	Version      Version      `json:"version"`
+	GetStateMode GetStateMode `json:"getStateMode"`
+	Files        []FileInfo   `json:"files"`
+	Modules      []ModuleInfo `json:"modules"`
+	Plugin       PluginInfo   `json:"plugin"`
+}
+
+// ValueType is the type for a value
+type ValueType int32
+
+type ReadOnlyAttrib struct {
+	ValueType   ValueType      `json:"valueType"`
+	TypeOpts    []uint8        `json:"typeOpts"`
+	Description string         `json:"description"`
+	Units       string         `json:"units"`
+	Enum        map[int]string `json:"enum"`
+	IsAKey      bool           `json:"isAKey"`
+	AttrName    string         `json:"attrName"`
+}
+
+// ReadOnlySubPathMap abstracts the read only subpath
+type ReadOnlySubPathMap map[string]ReadOnlyAttrib
+
+// ReadOnlyPathMap abstracts the read only path
+type ReadOnlyPathMap map[string]ReadOnlySubPathMap
+
+// ReadWritePathElem holds data about a leaf or container
+type ReadWritePathElem struct {
+	ReadOnlyAttrib
+	Mandatory bool
+	Default   string
+	Range     []string
+	Length    []string
+}
+
+// ReadWritePathMap is a map of ReadWrite paths a their metadata
+type ReadWritePathMap map[string]ReadWritePathElem
