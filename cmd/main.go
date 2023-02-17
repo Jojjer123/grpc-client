@@ -453,366 +453,366 @@ func testApplyingConfig() {
 					},
 				},
 			},
-			// {
-			// 	Path: &pb.Path{
-			// 		Elem: []*pb.PathElem{
-			// 			{
-			// 				Name: "interfaces",
-			// 				Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
-			// 			},
-			// 			{
-			// 				Name: "interface",
-			// 				Key:  map[string]string{"name": "sw0p1"},
-			// 			},
-			// 			{
-			// 				Name: "gate-parameters",
-			// 				Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched"},
-			// 			},
-			// 			{
-			// 				Name: "admin-control-list",
-			// 				Key:  map[string]string{"index": fmt.Sprint(0)},
-			// 			},
-			// 			{
-			// 				Name: "sgs-params",
-			// 				Key:  map[string]string{},
-			// 			},
-			// 			{
-			// 				Name: "gate-states-value",
-			// 				Key:  map[string]string{},
-			// 			},
-			// 		},
-			// 		Target: "192.168.0.3",
-			// 	},
-			// 	Val: &pb.TypedValue{
-			// 		Value: &pb.TypedValue_UintVal{
-			// 			UintVal: 255,
-			// 		},
-			// 	},
-			// },
-			// {
-			// 	Path: &pb.Path{
-			// 		Elem: []*pb.PathElem{
-			// 			{
-			// 				Name: "interfaces",
-			// 				Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
-			// 			},
-			// 			{
-			// 				Name: "interface",
-			// 				Key:  map[string]string{"name": "sw0p1"},
-			// 			},
-			// 			{
-			// 				Name: "gate-parameters",
-			// 				Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched"},
-			// 			},
-			// 			{
-			// 				Name: "admin-control-list",
-			// 				Key:  map[string]string{"index": fmt.Sprint(0)},
-			// 			},
-			// 			{
-			// 				Name: "sgs-params",
-			// 				Key:  map[string]string{},
-			// 			},
-			// 			{
-			// 				Name: "time-interval-value",
-			// 				Key:  map[string]string{},
-			// 			},
-			// 		},
-			// 		Target: "192.168.0.3",
-			// 	},
-			// 	Val: &pb.TypedValue{
-			// 		Value: &pb.TypedValue_UintVal{
-			// 			UintVal: 2000000,
-			// 		},
-			// 	},
-			// },
-			// {
-			// 	Path: &pb.Path{
-			// 		Elem: []*pb.PathElem{
-			// 			{
-			// 				Name: "interfaces",
-			// 				Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
-			// 			},
-			// 			{
-			// 				Name: "interface",
-			// 				Key:  map[string]string{"name": "sw0p1"},
-			// 			},
-			// 			{
-			// 				Name: "gate-parameters",
-			// 				Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched"},
-			// 			},
-			// 			{
-			// 				Name: "admin-control-list",
-			// 				Key:  map[string]string{"index": fmt.Sprint(1)},
-			// 			},
-			// 			{
-			// 				Name: "operation-name",
-			// 				Key:  map[string]string{},
-			// 			},
-			// 		},
-			// 		Target: "192.168.0.3",
-			// 	},
-			// 	Val: &pb.TypedValue{
-			// 		Value: &pb.TypedValue_StringVal{
-			// 			StringVal: "set-gate-states",
-			// 		},
-			// 	},
-			// },
-			// {
-			// 	Path: &pb.Path{
-			// 		Elem: []*pb.PathElem{
-			// 			{
-			// 				Name: "interfaces",
-			// 				Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
-			// 			},
-			// 			{
-			// 				Name: "interface",
-			// 				Key:  map[string]string{"name": "sw0p1"},
-			// 			},
-			// 			{
-			// 				Name: "gate-parameters",
-			// 				Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched"},
-			// 			},
-			// 			{
-			// 				Name: "admin-control-list",
-			// 				Key:  map[string]string{"index": fmt.Sprint(1)},
-			// 			},
-			// 			{
-			// 				Name: "sgs-params",
-			// 				Key:  map[string]string{},
-			// 			},
-			// 			{
-			// 				Name: "gate-states-value",
-			// 				Key:  map[string]string{},
-			// 			},
-			// 		},
-			// 		Target: "192.168.0.3",
-			// 	},
-			// 	Val: &pb.TypedValue{
-			// 		Value: &pb.TypedValue_UintVal{
-			// 			UintVal: 255,
-			// 		},
-			// 	},
-			// },
-			// {
-			// 	Path: &pb.Path{
-			// 		Elem: []*pb.PathElem{
-			// 			{
-			// 				Name: "interfaces",
-			// 				Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
-			// 			},
-			// 			{
-			// 				Name: "interface",
-			// 				Key:  map[string]string{"name": "sw0p1"},
-			// 			},
-			// 			{
-			// 				Name: "gate-parameters",
-			// 				Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched"},
-			// 			},
-			// 			{
-			// 				Name: "admin-control-list",
-			// 				Key:  map[string]string{"index": fmt.Sprint(1)},
-			// 			},
-			// 			{
-			// 				Name: "sgs-params",
-			// 				Key:  map[string]string{},
-			// 			},
-			// 			{
-			// 				Name: "time-interval-value",
-			// 				Key:  map[string]string{},
-			// 			},
-			// 		},
-			// 		Target: "192.168.0.3",
-			// 	},
-			// 	Val: &pb.TypedValue{
-			// 		Value: &pb.TypedValue_UintVal{
-			// 			UintVal: 2000000,
-			// 		},
-			// 	},
-			// },
-			// {
-			// 	Path: &pb.Path{
-			// 		Elem: []*pb.PathElem{
-			// 			{
-			// 				Name: "interfaces",
-			// 				Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
-			// 			},
-			// 			{
-			// 				Name: "interface",
-			// 				Key:  map[string]string{"name": "sw0p1"},
-			// 			},
-			// 			{
-			// 				Name: "gate-parameters",
-			// 				Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched"},
-			// 			},
-			// 			{
-			// 				Name: "admin-cycle-time",
-			// 				Key:  map[string]string{},
-			// 			},
-			// 			{
-			// 				Name: "numerator",
-			// 				Key:  map[string]string{},
-			// 			},
-			// 		},
-			// 		Target: "192.168.0.3",
-			// 	},
-			// 	Val: &pb.TypedValue{
-			// 		Value: &pb.TypedValue_IntVal{
-			// 			IntVal: int64(4),
-			// 		},
-			// 	},
-			// },
-			// {
-			// 	Path: &pb.Path{
-			// 		Elem: []*pb.PathElem{
-			// 			{
-			// 				Name: "interfaces",
-			// 				Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
-			// 			},
-			// 			{
-			// 				Name: "interface",
-			// 				Key:  map[string]string{"name": "sw0p1"},
-			// 			},
-			// 			{
-			// 				Name: "gate-parameters",
-			// 				Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched"},
-			// 			},
-			// 			{
-			// 				Name: "admin-cycle-time",
-			// 				Key:  map[string]string{},
-			// 			},
-			// 			{
-			// 				Name: "denominator",
-			// 				Key:  map[string]string{},
-			// 			},
-			// 		},
-			// 		Target: "192.168.0.3",
-			// 	},
-			// 	Val: &pb.TypedValue{
-			// 		Value: &pb.TypedValue_IntVal{
-			// 			IntVal: 1000,
-			// 		},
-			// 	},
-			// },
-			// {
-			// 	Path: &pb.Path{
-			// 		Elem: []*pb.PathElem{
-			// 			{
-			// 				Name: "interfaces",
-			// 				Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
-			// 			},
-			// 			{
-			// 				Name: "interface",
-			// 				Key:  map[string]string{"name": "sw0p1"},
-			// 			},
-			// 			{
-			// 				Name: "gate-parameters",
-			// 				Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched"},
-			// 			},
-			// 			{
-			// 				Name: "admin-cycle-time-extension",
-			// 				Key:  map[string]string{},
-			// 			},
-			// 		},
-			// 		Target: "192.168.0.3",
-			// 	},
-			// 	Val: &pb.TypedValue{
-			// 		Value: &pb.TypedValue_UintVal{
-			// 			UintVal: 0,
-			// 		},
-			// 	},
-			// },
-			// {
-			// 	Path: &pb.Path{
-			// 		Elem: []*pb.PathElem{
-			// 			{
-			// 				Name: "interfaces",
-			// 				Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
-			// 			},
-			// 			{
-			// 				Name: "interface",
-			// 				Key:  map[string]string{"name": "sw0p1"},
-			// 			},
-			// 			{
-			// 				Name: "gate-parameters",
-			// 				Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched"},
-			// 			},
-			// 			{
-			// 				Name: "admin-base-time",
-			// 				Key:  map[string]string{},
-			// 			},
-			// 			{
-			// 				Name: "seconds",
-			// 				Key:  map[string]string{},
-			// 			},
-			// 		},
-			// 		Target: "192.168.0.3",
-			// 	},
-			// 	Val: &pb.TypedValue{
-			// 		Value: &pb.TypedValue_StringVal{
-			// 			StringVal: "0",
-			// 		},
-			// 	},
-			// },
-			// {
-			// 	Path: &pb.Path{
-			// 		Elem: []*pb.PathElem{
-			// 			{
-			// 				Name: "interfaces",
-			// 				Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
-			// 			},
-			// 			{
-			// 				Name: "interface",
-			// 				Key:  map[string]string{"name": "sw0p1"},
-			// 			},
-			// 			{
-			// 				Name: "gate-parameters",
-			// 				Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched"},
-			// 			},
-			// 			{
-			// 				Name: "admin-base-time",
-			// 				Key:  map[string]string{},
-			// 			},
-			// 			{
-			// 				Name: "fractional-seconds",
-			// 				Key:  map[string]string{},
-			// 			},
-			// 		},
-			// 		Target: "192.168.0.3",
-			// 	},
-			// 	Val: &pb.TypedValue{
-			// 		Value: &pb.TypedValue_StringVal{
-			// 			StringVal: "0",
-			// 		},
-			// 	},
-			// },
-			// {
-			// 	Path: &pb.Path{
-			// 		Elem: []*pb.PathElem{
-			// 			{
-			// 				Name: "interfaces",
-			// 				Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
-			// 			},
-			// 			{
-			// 				Name: "interface",
-			// 				Key:  map[string]string{"name": "sw0p1"},
-			// 			},
-			// 			{
-			// 				Name: "gate-parameters",
-			// 				Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched"},
-			// 			},
-			// 			{
-			// 				Name: "config-change",
-			// 				Key:  map[string]string{},
-			// 			},
-			// 		},
-			// 		Target: "192.168.0.3",
-			// 	},
-			// 	Val: &pb.TypedValue{
-			// 		Value: &pb.TypedValue_BoolVal{
-			// 			BoolVal: true,
-			// 		},
-			// 	},
-			// },
+			{
+				Path: &pb.Path{
+					Elem: []*pb.PathElem{
+						{
+							Name: "interfaces",
+							Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
+						},
+						{
+							Name: "interface",
+							Key:  map[string]string{"name": "sw0p1"},
+						},
+						{
+							Name: "gate-parameters",
+							Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched"},
+						},
+						{
+							Name: "admin-control-list",
+							Key:  map[string]string{"index": fmt.Sprint(0)},
+						},
+						{
+							Name: "sgs-params",
+							Key:  map[string]string{},
+						},
+						{
+							Name: "gate-states-value",
+							Key:  map[string]string{},
+						},
+					},
+					Target: "192.168.0.3",
+				},
+				Val: &pb.TypedValue{
+					Value: &pb.TypedValue_UintVal{
+						UintVal: 255,
+					},
+				},
+			},
+			{
+				Path: &pb.Path{
+					Elem: []*pb.PathElem{
+						{
+							Name: "interfaces",
+							Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
+						},
+						{
+							Name: "interface",
+							Key:  map[string]string{"name": "sw0p1"},
+						},
+						{
+							Name: "gate-parameters",
+							Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched"},
+						},
+						{
+							Name: "admin-control-list",
+							Key:  map[string]string{"index": fmt.Sprint(0)},
+						},
+						{
+							Name: "sgs-params",
+							Key:  map[string]string{},
+						},
+						{
+							Name: "time-interval-value",
+							Key:  map[string]string{},
+						},
+					},
+					Target: "192.168.0.3",
+				},
+				Val: &pb.TypedValue{
+					Value: &pb.TypedValue_UintVal{
+						UintVal: 2000000,
+					},
+				},
+			},
+			{
+				Path: &pb.Path{
+					Elem: []*pb.PathElem{
+						{
+							Name: "interfaces",
+							Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
+						},
+						{
+							Name: "interface",
+							Key:  map[string]string{"name": "sw0p1"},
+						},
+						{
+							Name: "gate-parameters",
+							Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched"},
+						},
+						{
+							Name: "admin-control-list",
+							Key:  map[string]string{"index": fmt.Sprint(1)},
+						},
+						{
+							Name: "operation-name",
+							Key:  map[string]string{},
+						},
+					},
+					Target: "192.168.0.3",
+				},
+				Val: &pb.TypedValue{
+					Value: &pb.TypedValue_StringVal{
+						StringVal: "set-gate-states",
+					},
+				},
+			},
+			{
+				Path: &pb.Path{
+					Elem: []*pb.PathElem{
+						{
+							Name: "interfaces",
+							Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
+						},
+						{
+							Name: "interface",
+							Key:  map[string]string{"name": "sw0p1"},
+						},
+						{
+							Name: "gate-parameters",
+							Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched"},
+						},
+						{
+							Name: "admin-control-list",
+							Key:  map[string]string{"index": fmt.Sprint(1)},
+						},
+						{
+							Name: "sgs-params",
+							Key:  map[string]string{},
+						},
+						{
+							Name: "gate-states-value",
+							Key:  map[string]string{},
+						},
+					},
+					Target: "192.168.0.3",
+				},
+				Val: &pb.TypedValue{
+					Value: &pb.TypedValue_UintVal{
+						UintVal: 255,
+					},
+				},
+			},
+			{
+				Path: &pb.Path{
+					Elem: []*pb.PathElem{
+						{
+							Name: "interfaces",
+							Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
+						},
+						{
+							Name: "interface",
+							Key:  map[string]string{"name": "sw0p1"},
+						},
+						{
+							Name: "gate-parameters",
+							Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched"},
+						},
+						{
+							Name: "admin-control-list",
+							Key:  map[string]string{"index": fmt.Sprint(1)},
+						},
+						{
+							Name: "sgs-params",
+							Key:  map[string]string{},
+						},
+						{
+							Name: "time-interval-value",
+							Key:  map[string]string{},
+						},
+					},
+					Target: "192.168.0.3",
+				},
+				Val: &pb.TypedValue{
+					Value: &pb.TypedValue_UintVal{
+						UintVal: 2000000,
+					},
+				},
+			},
+			{
+				Path: &pb.Path{
+					Elem: []*pb.PathElem{
+						{
+							Name: "interfaces",
+							Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
+						},
+						{
+							Name: "interface",
+							Key:  map[string]string{"name": "sw0p1"},
+						},
+						{
+							Name: "gate-parameters",
+							Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched"},
+						},
+						{
+							Name: "admin-cycle-time",
+							Key:  map[string]string{},
+						},
+						{
+							Name: "numerator",
+							Key:  map[string]string{},
+						},
+					},
+					Target: "192.168.0.3",
+				},
+				Val: &pb.TypedValue{
+					Value: &pb.TypedValue_IntVal{
+						IntVal: int64(4),
+					},
+				},
+			},
+			{
+				Path: &pb.Path{
+					Elem: []*pb.PathElem{
+						{
+							Name: "interfaces",
+							Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
+						},
+						{
+							Name: "interface",
+							Key:  map[string]string{"name": "sw0p1"},
+						},
+						{
+							Name: "gate-parameters",
+							Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched"},
+						},
+						{
+							Name: "admin-cycle-time",
+							Key:  map[string]string{},
+						},
+						{
+							Name: "denominator",
+							Key:  map[string]string{},
+						},
+					},
+					Target: "192.168.0.3",
+				},
+				Val: &pb.TypedValue{
+					Value: &pb.TypedValue_IntVal{
+						IntVal: 1000,
+					},
+				},
+			},
+			{
+				Path: &pb.Path{
+					Elem: []*pb.PathElem{
+						{
+							Name: "interfaces",
+							Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
+						},
+						{
+							Name: "interface",
+							Key:  map[string]string{"name": "sw0p1"},
+						},
+						{
+							Name: "gate-parameters",
+							Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched"},
+						},
+						{
+							Name: "admin-cycle-time-extension",
+							Key:  map[string]string{},
+						},
+					},
+					Target: "192.168.0.3",
+				},
+				Val: &pb.TypedValue{
+					Value: &pb.TypedValue_UintVal{
+						UintVal: 0,
+					},
+				},
+			},
+			{
+				Path: &pb.Path{
+					Elem: []*pb.PathElem{
+						{
+							Name: "interfaces",
+							Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
+						},
+						{
+							Name: "interface",
+							Key:  map[string]string{"name": "sw0p1"},
+						},
+						{
+							Name: "gate-parameters",
+							Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched"},
+						},
+						{
+							Name: "admin-base-time",
+							Key:  map[string]string{},
+						},
+						{
+							Name: "seconds",
+							Key:  map[string]string{},
+						},
+					},
+					Target: "192.168.0.3",
+				},
+				Val: &pb.TypedValue{
+					Value: &pb.TypedValue_StringVal{
+						StringVal: "0",
+					},
+				},
+			},
+			{
+				Path: &pb.Path{
+					Elem: []*pb.PathElem{
+						{
+							Name: "interfaces",
+							Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
+						},
+						{
+							Name: "interface",
+							Key:  map[string]string{"name": "sw0p1"},
+						},
+						{
+							Name: "gate-parameters",
+							Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched"},
+						},
+						{
+							Name: "admin-base-time",
+							Key:  map[string]string{},
+						},
+						{
+							Name: "fractional-seconds",
+							Key:  map[string]string{},
+						},
+					},
+					Target: "192.168.0.3",
+				},
+				Val: &pb.TypedValue{
+					Value: &pb.TypedValue_StringVal{
+						StringVal: "0",
+					},
+				},
+			},
+			{
+				Path: &pb.Path{
+					Elem: []*pb.PathElem{
+						{
+							Name: "interfaces",
+							Key:  map[string]string{"namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
+						},
+						{
+							Name: "interface",
+							Key:  map[string]string{"name": "sw0p1"},
+						},
+						{
+							Name: "gate-parameters",
+							Key:  map[string]string{"namespace": "urn:ieee:std:802.1Q:yang:ieee802-dot1q-sched"},
+						},
+						{
+							Name: "config-change",
+							Key:  map[string]string{},
+						},
+					},
+					Target: "192.168.0.3",
+				},
+				Val: &pb.TypedValue{
+					Value: &pb.TypedValue_BoolVal{
+						BoolVal: true,
+					},
+				},
+			},
 		},
 	}
 
