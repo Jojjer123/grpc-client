@@ -7,7 +7,6 @@ import (
 
 	// "encoding/xml"
 	"fmt"
-	"log"
 
 	// "os"
 	// "strconv"
@@ -1094,14 +1093,14 @@ func getFullConfigFromSwitch(addr string) {
 
 	s, err := netconf.DialSSH(addr, sshConfig)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("Failed creating connection: %v\n", err)
 	}
 
 	defer s.Close()
 
 	reply, err := s.Exec(netconf.MethodGetConfig("running"))
 	if err != nil {
-		fmt.Printf("Failed getting config: %v", err)
+		fmt.Printf("Failed getting config: %v\n", err)
 		return
 	}
 
