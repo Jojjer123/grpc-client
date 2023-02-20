@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"log"
 
 	// "encoding/xml"
 	"fmt"
@@ -14,6 +15,7 @@ import (
 
 	"github.com/Juniper/go-netconf/netconf"
 	"github.com/atomix/atomix-go-client/pkg/atomix"
+	"golang.org/x/crypto/ssh"
 
 	// _map "github.com/atomix/atomix-go-client/pkg/atomix/map"
 	// configmodel "github.com/onosproject/onos-config-model/pkg/model"
@@ -26,7 +28,6 @@ import (
 	// "github.com/openconfig/gnmi/proto/gnmi_ext"
 
 	// types "github.com/onosproject/grpc-client/Types"
-	"golang.org/x/crypto/ssh"
 
 	// adapterResp "github.com/onosproject/grpc-client/adapterResponse"
 
@@ -44,7 +45,8 @@ func main() {
 
 	getFullConfigFromSwitch("192.168.0.3")
 
-	// resp := getFullConfig("192.168.0.2")
+	// resp := getFullConfig("192.168.0.3")
+	// fmt.Printf("Config: %v", resp)
 
 	// var adapterResponse adapterResp.AdapterResponse
 
@@ -1101,6 +1103,7 @@ func getFullConfigFromSwitch(addr string) {
 	reply, err := s.Exec(netconf.MethodGetConfig("running"))
 	if err != nil {
 		fmt.Printf("Failed getting config: %v\n", err)
+		log.Fatalf("RIP %v", err)
 		return
 	}
 
