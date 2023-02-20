@@ -82,9 +82,10 @@ func main() {
 }
 
 func getConfig(ip string) {
-	reply, err := sendRPCRequest(netconf.MethodGetConfig("running"), ip)
+	reply, err := sendRPCRequest(netconf.RawMethod(fmt.Sprintf("<get/>")), ip)
 	if err != nil {
 		fmt.Printf("Failed sending RPC request: %v\n", err)
+		return
 	}
 
 	fmt.Printf("Config: %v\n", reply.Data)
@@ -102,7 +103,7 @@ func sendRPCRequest(fn netconf.RPCMethod, switchAddr string) (*netconf.RPCReply,
 	// Start connection to network device
 	s, err := netconf.DialSSH(switchAddr, sshConfig)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("Failed creating connection %v\n", err)
 		return nil, err
 	}
 
@@ -111,7 +112,7 @@ func sendRPCRequest(fn netconf.RPCMethod, switchAddr string) (*netconf.RPCReply,
 
 	reply, err := s.Exec(fn)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("Failed executing request: %v\n", err)
 		return nil, err
 	}
 
