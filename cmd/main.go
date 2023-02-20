@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"log"
 
 	// "encoding/xml"
 	"fmt"
@@ -43,7 +42,9 @@ import (
 func main() {
 	fmt.Println("Start")
 
-	getFullConfigFromSwitch("192.168.0.3")
+	getConfig("192.168.0.3")
+
+	// getFullConfigFromSwitch("192.168.0.3")
 
 	// resp := getFullConfig("192.168.0.3")
 	// fmt.Printf("Config: %v", resp)
@@ -78,6 +79,43 @@ func main() {
 	for {
 		time.Sleep(10 * time.Second)
 	}
+}
+
+func getConfig(ip string) {
+	reply, err := sendRPCRequest(netconf.MethodGetConfig("running"), ip)
+	if err != nil {
+		fmt.Printf("Failed sending RPC request: %v\n", err)
+	}
+
+	fmt.Printf("Config: %v\n", reply.Data)
+}
+
+// Takes in an RPCMethod function and executes it, then returns the reply from the network device
+func sendRPCRequest(fn netconf.RPCMethod, switchAddr string) (*netconf.RPCReply, error) {
+	//  Define config for connection to network device
+	sshConfig := &ssh.ClientConfig{
+		User:            "root",
+		Auth:            []ssh.AuthMethod{ssh.Password("")},
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+	}
+
+	// Start connection to network device
+	s, err := netconf.DialSSH(switchAddr, sshConfig)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	// Close connetion to network device when this function is done executing
+	defer s.Close()
+
+	reply, err := s.Exec(fn)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	return reply, nil
 }
 
 // Get the model from Atomix (k/v store)
@@ -1086,29 +1124,28 @@ func testApplyingConfig() {
 // 	}
 // }
 
-func getFullConfigFromSwitch(addr string) {
-	sshConfig := &ssh.ClientConfig{
-		User:            "root",
-		Auth:            []ssh.AuthMethod{ssh.Password("")},
-		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-	}
+// func getFullConfigFromSwitch(addr string) {
+// 	sshConfig := &ssh.ClientConfig{
+// 		User:            "root",
+// 		Auth:            []ssh.AuthMethod{ssh.Password("")},
+// 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+// 	}
 
-	s, err := netconf.DialSSH(addr, sshConfig)
-	if err != nil {
-		fmt.Printf("Failed creating connection: %v\n", err)
-	}
+// 	s, err := netconf.DialSSH(addr, sshConfig)
+// 	if err != nil {
+// 		fmt.Printf("Failed creating connection: %v\n", err)
+// 	}
 
-	defer s.Close()
+// 	defer s.Close()
 
-	reply, err := s.Exec(netconf.MethodGetConfig("running"))
-	if err != nil {
-		fmt.Printf("Failed getting config: %v\n", err)
-		log.Fatalf("RIP %v", err)
-		return
-	}
+// 	reply, err := s.Exec(netconf.MethodGetConfig("running"))
+// 	if err != nil {
+// 		fmt.Printf("Failed getting config: %v\n", err)
+// 		return
+// 	}
 
-	fmt.Println(reply.Data)
-}
+// 	fmt.Println(reply.Data)
+// }
 
 // func testNetworkChangeRequest(switchAddr string) {
 // 	ctx := context.Background()
