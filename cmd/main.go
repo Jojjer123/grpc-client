@@ -7,13 +7,15 @@ import (
 
 	// "encoding/xml"
 	"fmt"
-	// "log"
+	"log"
+
 	// "os"
 	// "strconv"
 	"time"
 
-	// "github.com/Juniper/go-netconf/netconf"
+	"github.com/Juniper/go-netconf/netconf"
 	"github.com/atomix/atomix-go-client/pkg/atomix"
+
 	// _map "github.com/atomix/atomix-go-client/pkg/atomix/map"
 	// configmodel "github.com/onosproject/onos-config-model/pkg/model"
 
@@ -25,7 +27,7 @@ import (
 	// "github.com/openconfig/gnmi/proto/gnmi_ext"
 
 	// types "github.com/onosproject/grpc-client/Types"
-	// "golang.org/x/crypto/ssh"
+	"golang.org/x/crypto/ssh"
 
 	// adapterResp "github.com/onosproject/grpc-client/adapterResponse"
 
@@ -41,7 +43,7 @@ import (
 func main() {
 	fmt.Println("Start")
 
-	// getFullConfigFromSwitch("192.168.0.2")
+	getFullConfigFromSwitch("192.168.0.3")
 
 	// resp := getFullConfig("192.168.0.2")
 
@@ -55,7 +57,7 @@ func main() {
 
 	// printTree(schemaTree, 0)
 
-	testApplyingConfig()
+	// testApplyingConfig()
 
 	// model, err := getModel("tsn-model:1.0.2")
 	// if err != nil {
@@ -1083,28 +1085,28 @@ func testApplyingConfig() {
 // 	}
 // }
 
-// func getFullConfigFromSwitch(addr string) {
-// 	sshConfig := &ssh.ClientConfig{
-// 		User:            "root",
-// 		Auth:            []ssh.AuthMethod{ssh.Password("")},
-// 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-// 	}
+func getFullConfigFromSwitch(addr string) {
+	sshConfig := &ssh.ClientConfig{
+		User:            "root",
+		Auth:            []ssh.AuthMethod{ssh.Password("")},
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+	}
 
-// 	s, err := netconf.DialSSH(addr, sshConfig)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
+	s, err := netconf.DialSSH(addr, sshConfig)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-// 	defer s.Close()
+	defer s.Close()
 
-// 	reply, err := s.Exec(netconf.MethodGetConfig("running"))
-// 	if err != nil {
-// 		fmt.Printf("Failed getting config: %v", err)
-// 		return
-// 	}
+	reply, err := s.Exec(netconf.MethodGetConfig("running"))
+	if err != nil {
+		fmt.Printf("Failed getting config: %v", err)
+		return
+	}
 
-// 	fmt.Println(reply.Data)
-// }
+	fmt.Println(reply.Data)
+}
 
 // func testNetworkChangeRequest(switchAddr string) {
 // 	ctx := context.Background()
