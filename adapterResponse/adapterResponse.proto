@@ -12,5 +12,6 @@ message SchemaEntry {
     string Name = 1;
     string Tag = 2;
     string Namespace = 3;
-    string Value = 4;
+    string NamespacePrefix = 4;
+    string Value = 5;
 }

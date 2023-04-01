@@ -14,7 +14,11 @@ import (
 
 	"github.com/Juniper/go-netconf/netconf"
 	"github.com/atomix/atomix-go-client/pkg/atomix"
+<<<<<<< Updated upstream
 	"golang.org/x/crypto/ssh"
+=======
+	"google.golang.org/protobuf/proto"
+>>>>>>> Stashed changes
 
 	// _map "github.com/atomix/atomix-go-client/pkg/atomix/map"
 	// configmodel "github.com/onosproject/onos-config-model/pkg/model"
@@ -28,7 +32,7 @@ import (
 
 	// types "github.com/onosproject/grpc-client/Types"
 
-	// adapterResp "github.com/onosproject/grpc-client/adapterResponse"
+	adapterResp "github.com/onosproject/grpc-client/adapterResponse"
 
 	// "github.com/openconfig/goyang/pkg/yang"
 	// "github.com/openconfig/ygot/ygot"
@@ -44,20 +48,24 @@ func main() {
 
 	getConfig("192.168.0.3")
 
+<<<<<<< Updated upstream
 	// getFullConfigFromSwitch("192.168.0.3")
 
 	// resp := getFullConfig("192.168.0.3")
 	// fmt.Printf("Config: %v", resp)
+=======
+	resp := getFullConfig("192.168.0.2")
+>>>>>>> Stashed changes
 
-	// var adapterResponse adapterResp.AdapterResponse
+	var adapterResponse adapterResp.AdapterResponse
 
-	// if err := proto.Unmarshal(resp.Notification[0].Update[0].Val.GetProtoBytes(), &adapterResponse); err != nil {
-	// 	fmt.Printf("Failed to unmarshal ProtoBytes: %v", err)
-	// }
+	if err := proto.Unmarshal(resp.Notification[0].Update[0].Val.GetProtoBytes(), &adapterResponse); err != nil {
+		fmt.Printf("Failed to unmarshal ProtoBytes: %v", err)
+	}
 
-	// schemaTree := getNewTreeStructure(adapterResponse.Entries)
+	schemaTree := getNewTreeStructure(adapterResponse.Entries)
 
-	// printTree(schemaTree, 0)
+	printTree(schemaTree, 0)
 
 	// testApplyingConfig()
 
@@ -177,24 +185,24 @@ func deserialize(modelPlugin *model.ModelPlugin, field string, data *_map.Entry)
 
 // func getModel(name string) (*model.ModelPlugin, error) {
 // 	ctx := context.Background()
-
+//
 // 	store, err := atomix.GetMap(ctx, "device-models")
 // 	if err != nil {
 // 		fmt.Printf("Failed gettings store: %v\n", err)
 // 		return nil, err
 // 	}
-
+//
 // 	modelFields := []string{"info", "roPaths", "rwPaths"}
-
+//
 // 	modelPlugin := &model.ModelPlugin{}
-
+//
 // 	for _, field := range modelFields {
 // 		data, err := store.Get(ctx, name+":"+field)
 // 		if err != nil {
 // 			fmt.Printf("Failed getting resource: %v\n", err)
 // 			return nil, err
 // 		}
-
+//
 // 		switch field {
 // 		case "info":
 // 			err := json.Unmarshal(data.Value, &modelPlugin.Info)
@@ -206,26 +214,26 @@ func deserialize(modelPlugin *model.ModelPlugin, field string, data *_map.Entry)
 // 			if err != nil {
 // 				return nil, err
 // 			}
-
+//
 // 		case "rwPaths":
 // 			err := json.Unmarshal(data.Value, &modelPlugin.ReadWritePaths)
 // 			if err != nil {
 // 				return nil, err
 // 			}
-
+//
 // 		default:
 // 			return nil, err
 // 		}
 // 	}
-
+//
 // 	return modelPlugin, nil
 // }
 
 // func readChan(ch chan _map.Entry, num int) {
 // 	msg := <-ch
-
+//
 // 	fmt.Println(msg.Key)
-
+//
 // 	if num < 1 {
 // 		go readChan(ch, num+1)
 // 	}
@@ -1076,54 +1084,54 @@ func testApplyingConfig() {
 	fmt.Println(response)
 }
 
-// func getNewTreeStructure(schemaEntries []*adapterResp.SchemaEntry) *SchemaTree {
-// 	var newTree *SchemaTree
-// 	tree := &SchemaTree{}
-// 	lastNode := ""
-// 	for _, entry := range schemaEntries {
-// 		if entry.Value == "" {
-// 			// In a directory
-// 			if entry.Tag == "end" {
-// 				if entry.Name != "data" {
-// 					if lastNode != "leaf" {
-// 						tree = tree.Parent
-// 					}
-// 					lastNode = ""
-// 				}
-// 			} else {
-// 				newTree = &SchemaTree{Parent: tree}
+func getNewTreeStructure(schemaEntries []*adapterResp.SchemaEntry) *SchemaTree {
+	var newTree *SchemaTree
+	tree := &SchemaTree{}
+	lastNode := ""
+	for _, entry := range schemaEntries {
+		if entry.Value == "" {
+			// In a directory
+			if entry.Tag == "end" {
+				if entry.Name != "data" {
+					if lastNode != "leaf" {
+						tree = tree.Parent
+					}
+					lastNode = ""
+				}
+			} else {
+				newTree = &SchemaTree{Parent: tree}
 
-// 				newTree.Name = entry.Name
-// 				newTree.Namespace = entry.Namespace
-// 				newTree.Parent.Children = append(newTree.Parent.Children, newTree)
+				newTree.Name = entry.Name
+				newTree.Namespace = entry.Namespace
+				newTree.Parent.Children = append(newTree.Parent.Children, newTree)
 
-// 				tree = newTree
-// 			}
-// 		} else {
-// 			// In a leaf
-// 			newTree = &SchemaTree{Parent: tree}
+				tree = newTree
+			}
+		} else {
+			// In a leaf
+			newTree = &SchemaTree{Parent: tree}
 
-// 			newTree.Name = entry.Name
-// 			newTree.Value = entry.Value
-// 			newTree.Parent.Children = append(newTree.Parent.Children, newTree)
+			newTree.Name = entry.Name
+			newTree.Value = entry.Value
+			newTree.Parent.Children = append(newTree.Parent.Children, newTree)
 
-// 			lastNode = "leaf"
-// 		}
-// 	}
-// 	return tree
-// }
+			lastNode = "leaf"
+		}
+	}
+	return tree
+}
 
-// func printTree(tree *SchemaTree, tabLevels int) {
-// 	tabs := ""
-// 	for i := 0; i < tabLevels; i++ {
-// 		tabs += "  "
-// 	}
+func printTree(tree *SchemaTree, tabLevels int) {
+	tabs := ""
+	for i := 0; i < tabLevels; i++ {
+		tabs += "  "
+	}
 
-// 	fmt.Println(tabs + tree.Name + "---" + tree.Namespace + "---" + tree.Value)
-// 	for _, child := range tree.Children {
-// 		printTree(child, tabLevels+1)
-// 	}
-// }
+	fmt.Println(tabs + tree.Name + "---" + tree.Namespace + "---" + tree.Value)
+	for _, child := range tree.Children {
+		printTree(child, tabLevels+1)
+	}
+}
 
 // func getFullConfigFromSwitch(addr string) {
 // 	sshConfig := &ssh.ClientConfig{
@@ -1502,46 +1510,46 @@ func testApplyingConfig() {
 // 	setReq("Stop", "192.168.0.1")
 // }
 
-// func getFullConfig(switchAddr string) *pb.GetResponse {
-// 	ctx := context.Background()
+func getFullConfig(switchAddr string) *pb.GetResponse {
+	ctx := context.Background()
 
-// 	address := []string{"gnmi-netconf-adapter:11161"}
+	address := []string{"gnmi-netconf-adapter:11161"}
 
-// 	c, err := gclient.New(ctx, client.Destination{
-// 		Addrs:       address,
-// 		Target:      "gnmi-netconf-adapter",
-// 		Timeout:     time.Second * 5,
-// 		Credentials: nil,
-// 		TLS:         nil,
-// 	})
+	c, err := gclient.New(ctx, client.Destination{
+		Addrs:       address,
+		Target:      "gnmi-netconf-adapter",
+		Timeout:     time.Second * 5,
+		Credentials: nil,
+		TLS:         nil,
+	})
 
-// 	if err != nil {
-// 		// fmt.Errorf("could not create a gNMI client: %v", err)
-// 		fmt.Print("Could not create a gNMI client: ")
-// 		fmt.Println(err)
-// 	}
+	if err != nil {
+		// fmt.Errorf("could not create a gNMI client: %v", err)
+		fmt.Print("Could not create a gNMI client: ")
+		fmt.Println(err)
+	}
 
-// 	getRequest := pb.GetRequest{
-// 		Path: []*pb.Path{
-// 			{
-// 				Target: switchAddr,
-// 			},
-// 		},
-// 		Type: pb.GetRequest_STATE,
-// 	}
+	getRequest := pb.GetRequest{
+		Path: []*pb.Path{
+			{
+				Target: switchAddr,
+			},
+		},
+		Type: pb.GetRequest_STATE,
+	}
 
-// 	response, err := c.(*gclient.Client).Get(ctx, &getRequest)
-// 	if err != nil {
-// 		fmt.Print("Target returned RPC error for Testing: ")
-// 		fmt.Println(err)
-// 	}
+	response, err := c.(*gclient.Client).Get(ctx, &getRequest)
+	if err != nil {
+		fmt.Print("Target returned RPC error for Testing: ")
+		fmt.Println(err)
+	}
 
-// 	c.Close()
+	c.Close()
 
-// 	// fmt.Println(response)
+	// fmt.Println(response)
 
-// 	return response
-// }
+	return response
+}
 
 // func testing() {
 // 	ctx := context.Background()
@@ -1862,13 +1870,13 @@ func testApplyingConfig() {
 // 	return tree
 // }
 
-// type SchemaTree struct {
-// 	Name      string
-// 	Namespace string
-// 	Children  []*SchemaTree
-// 	Parent    *SchemaTree
-// 	Value     string
-// }
+type SchemaTree struct {
+	Name      string
+	Namespace string
+	Children  []*SchemaTree
+	Parent    *SchemaTree
+	Value     string
+}
 
 // type Schema struct {
 // 	Entries []SchemaEntry

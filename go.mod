@@ -5,7 +5,6 @@ go 1.16
 require (
 	github.com/Juniper/go-netconf v0.3.0
 	github.com/atomix/atomix-go-client v0.6.2
-	github.com/golang/protobuf v1.5.2
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/openconfig/gnmi v0.9.1
 	github.com/openconfig/goyang v0.3.1
@@ -16,5 +15,6 @@ require (
 	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4 // indirect
 	golang.org/x/sys v0.0.0-20220503163025-988cb79eb6c6 // indirect
 	google.golang.org/grpc v1.46.0 // indirect
+	google.golang.org/protobuf v1.28.0
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 )
