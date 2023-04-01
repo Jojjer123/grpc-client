@@ -14,11 +14,8 @@ import (
 
 	"github.com/Juniper/go-netconf/netconf"
 	"github.com/atomix/atomix-go-client/pkg/atomix"
-<<<<<<< Updated upstream
 	"golang.org/x/crypto/ssh"
-=======
 	"google.golang.org/protobuf/proto"
->>>>>>> Stashed changes
 
 	// _map "github.com/atomix/atomix-go-client/pkg/atomix/map"
 	// configmodel "github.com/onosproject/onos-config-model/pkg/model"
@@ -48,14 +45,7 @@ func main() {
 
 	getConfig("192.168.0.3")
 
-<<<<<<< Updated upstream
-	// getFullConfigFromSwitch("192.168.0.3")
-
-	// resp := getFullConfig("192.168.0.3")
-	// fmt.Printf("Config: %v", resp)
-=======
 	resp := getFullConfig("192.168.0.2")
->>>>>>> Stashed changes
 
 	var adapterResponse adapterResp.AdapterResponse
 
