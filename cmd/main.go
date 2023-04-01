@@ -43,7 +43,7 @@ import (
 func main() {
 	fmt.Println("Start")
 
-	getConfig("192.168.0.3")
+	// getConfig("192.168.0.3")
 
 	resp := getFullConfig("192.168.0.2")
 
