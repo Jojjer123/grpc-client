@@ -1508,7 +1508,7 @@ func getFullConfig(switchAddr string) *pb.GetResponse {
 	c, err := gclient.New(ctx, client.Destination{
 		Addrs:       address,
 		Target:      "gnmi-netconf-adapter",
-		Timeout:     time.Second * 5,
+		Timeout:     time.Second * 120,
 		Credentials: nil,
 		TLS:         nil,
 	})
